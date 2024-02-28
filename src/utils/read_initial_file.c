@@ -31,21 +31,21 @@ object_data * read_file(char name_file[]){
     return data_file;
 }
 
-void create_file(char path[], object_data * data_file){
+/* void create_file(char path[], object_data * data_file){
     FILE *file;
     file = fopen(path, "wb");
 
     fwrite(data_file->data, sizeof(unsigned char), data_file->size, file);
     fclose(file); 
 }
-
+ */
 
 int main(){
-    char path[] = "image.png";
-    char path_output[] = "created_image.png";
+    /* char path[] = "image.png";
+    object_data * data_file = read_file(path); */
 
-    object_data * data_file = read_file(path);
-    create_file(path_output, data_file);
+    /* char path_output[] = "created_image.png";
+    create_file(path_output, data_file); */
    
     
     return 0;
