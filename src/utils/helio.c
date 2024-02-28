@@ -34,7 +34,7 @@ temp_list *create_priority_queue(temp_list *list, int **frequencies)
             hufftree *new_huff = (hufftree *)malloc(sizeof(hufftree));
             
             new_huff->byte = i;
-            new_huff->frequency = *frequencies[i];
+            new_huff->cont = *frequencies[i];
             new_huff->next = NULL;
             new_huff->left = NULL;
             new_huff->right = NULL;
@@ -48,7 +48,7 @@ temp_list *create_priority_queue(temp_list *list, int **frequencies)
                 hufftree *current = list->head;
                 hufftree *previous = NULL;
 
-                while (current != NULL && current->frequency < new_huff->frequency)
+                while (current != NULL && current->cont < new_huff->cont)
                 {
                     previous = current;
                     current = current->next;
