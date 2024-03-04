@@ -1,46 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct _huff
+typedef struct huff_node
 {
+    int priority;
     unsigned char byte;
-    int cont;
-    struct _huff *next;
-    struct _huff *left;
-    struct _huff *right;
-} hufftree;
+    struct huff_node *next;
+    struct huff_node *left;
+    struct huff_node *right;
+} Huff_Node;
 
 typedef struct huff_list
 {
     int size;
-    hufftree *head;
-} Hlist;
+    Huff_Node *head;
+} Huff_Queue;
 
-int is_empty(Hlist *list)
+int is_empty_queue(Huff_Queue *list)
 {
-    return list->size == 0 || list->head == NULL;
+    return list->head == NULL;
 }
 
-void enqueue_huff_list(Hlist *list, void *byte, int count, hufftree *left, hufftree *right)
+void enqueue_huff_list(Huff_Queue *list, void *byte, int frequency, Huff_Node *left, Huff_Node *right)
 {
-    hufftree *new_huff = (hufftree *)malloc(sizeof(hufftree));
+    Huff_Node *new_huff = (Huff_Node *)malloc(sizeof(Huff_Node));
     
     new_huff->byte = *(unsigned char *)byte;
-    new_huff->cont = count;
+    new_huff->priority = frequency;
     new_huff->left = left;
     new_huff->right = right;
     new_huff->next = NULL;
 
-    if (is_empty(list))
+    if (is_empty_queue(list))
     {
         list->head = new_huff;
     }
     else
     {
-        hufftree *current = list->head;
-        hufftree *previous = NULL;
+        Huff_Node *current = list->head;
+        Huff_Node *previous = NULL;
 
-        while (current != NULL && current->cont < new_huff->cont)
+        while (current != NULL && current->priority < new_huff->priority)
         {
             previous = current;
             current = current->next;
@@ -63,12 +63,19 @@ void enqueue_huff_list(Hlist *list, void *byte, int count, hufftree *left, hufft
     return;
 }
 
-Hlist *create_priority_queue(int *frequencies)
+Huff_Queue * create_queue()
 {
-    Hlist *list = (Hlist *)malloc(sizeof(Hlist));
+    Huff_Queue * new_queue = malloc(sizeof(Huff_Queue));
+    
+    new_queue->head = NULL;
+    new_queue->size = 0;
+    
+    return new_queue;
+}
 
-    list->size = 0;
-    list->head = NULL;
+Huff_Queue *create_priority_queue(int frequencies[])
+{
+    Huff_Queue *list = create_queue();
 
     for (int i = 0; i < 256; i++)
     {
@@ -81,13 +88,14 @@ Hlist *create_priority_queue(int *frequencies)
     return list;
 }
 
-void print_priority_queue(Hlist *list)
+void print_priority_queue(Huff_Queue *list)
 {
-    hufftree *current = list->head;
+    Huff_Node *current = list->head;
+    int sum = 0;
     
     while (current != NULL)
     {
-        printf("%c: %d\n", current->byte, current->cont);
+        printf("%c: %d\n", current->byte, current->priority);
         current = current->next;
     }
 
@@ -103,7 +111,7 @@ int main()
         frequencies[i] = i;
     }
 
-    Hlist *priority_queue = create_priority_queue(frequencies);
+    Huff_Queue *priority_queue = create_priority_queue(frequencies);
 
     print_priority_queue(priority_queue);
 
