@@ -40,10 +40,10 @@ int is_empty_queue(Huff_Queue * queue){
     return queue->head == NULL;
 }
 
-void enqueue_priority(Huff_Queue * queue, int freq, unsigned char byte){
-    Node * new_node = create_node(byte, freq);
+void enqueue_priority(Huff_Queue * queue, Node * new_node){
+   /*  Node * new_node = create_node(byte, freq); */
 
-    if(is_empty_queue(queue) || (freq < queue->head->priority) ){
+    if(is_empty_queue(queue) || (new_node->priority < queue->head->priority) ){
         new_node->next = queue->head;
         queue->head = new_node;
         queue->size++;
@@ -52,7 +52,7 @@ void enqueue_priority(Huff_Queue * queue, int freq, unsigned char byte){
 
     Node * current = queue->head;
 
-    while (current->next != NULL &&  freq > current->next->priority)
+    while (current->next != NULL &&  new_node->priority > current->next->priority)
     {
         current = current->next;
     }
@@ -80,43 +80,54 @@ Node * dequeue(Huff_Queue * queue){
 }
 
 
-Huff_Tree * create_huffman_tree(Huff_Queue * queue){
+Node * create_huffman_tree(Huff_Queue * queue){
     Node *left, *right, *new_node;
 
     while (queue->size > 1)
     {
         left = dequeue(queue);
         right = dequeue(queue);
+        new_node = create_node('*', left->priority + right->priority); // Allocate memory for the new node
         new_node->left = left;
         new_node->right = right;
-        enqueue_priority(queue, '*', left->priority + right->priority);
+        enqueue_priority(queue, new_node);
     }
+
+    return queue->head;
+}
+
+void print_huff_tree(Node * huff_tree, int heigth){
+    if(huff_tree->left == NULL && huff_tree->right == NULL){
+        printf("leaf: %c - height: %d\n", huff_tree->byte ,heigth);
+        return;
+    }
+
+    print_huff_tree(huff_tree->left, heigth + 1);
+    print_huff_tree(huff_tree->right, heigth + 1);
 }
 
 
 int main(){
     Huff_Queue * queue = create_queue();
 
-    enqueue_priority(queue, 30, 'd');
-    Node * dequeued = dequeue(queue);
-    printf("first: %c - size: %d\n", dequeued->byte, queue->size);
-    enqueue_priority(queue, 20, 'a');
-    enqueue_priority(queue, 10, 'z');
-    enqueue_priority(queue, 12, 'j');
-    dequeued = dequeue(queue);
-    printf("first: %c - size: %d\n", dequeued->byte, queue->size);
-    enqueue_priority(queue, 1, 'h');
-    enqueue_priority(queue, 100, 'x');
+    enqueue_priority(queue, create_node('a', 20));
+    
+    enqueue_priority(queue, create_node('a', 20));
+    enqueue_priority(queue, create_node('b', 30));
+    enqueue_priority(queue, create_node('c', 10));
+    enqueue_priority(queue, create_node('e', 50));
+    enqueue_priority(queue, create_node('r', 40));
 
-    struct node * current = queue->head;
+   /*  struct node * current = queue->head;
     while (current != NULL)
     {
         printf("c:%c - f:%d - size: %d\n", current->byte, current->priority, queue->size);
         current = current->next;
     }
+ */
 
-    dequeued = dequeue(queue);
-    printf("first: %c - size: %d", dequeued->byte, queue->size);
+    Node * huffman_tree = create_huffman_tree(queue);
+    print_huff_tree(huffman_tree, 0);
     
     return 0;
 
