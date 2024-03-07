@@ -110,21 +110,20 @@ void print_huff_tree(Node * huff_tree, int heigth){
 int main(){
     Huff_Queue * queue = create_queue();
 
-    enqueue_priority(queue, create_node('a', 20));
     
-    enqueue_priority(queue, create_node('a', 20));
-    enqueue_priority(queue, create_node('b', 30));
-    enqueue_priority(queue, create_node('c', 10));
-    enqueue_priority(queue, create_node('e', 50));
-    enqueue_priority(queue, create_node('r', 40));
+    enqueue_priority(queue, create_node('a', 5));
+    enqueue_priority(queue, create_node('b', 1));
+    enqueue_priority(queue, create_node('c', 3));
+    enqueue_priority(queue, create_node('e', 6));
+    enqueue_priority(queue, create_node('r', 9));
 
-   /*  struct node * current = queue->head;
+    struct node * current = queue->head;
     while (current != NULL)
     {
         printf("c:%c - f:%d - size: %d\n", current->byte, current->priority, queue->size);
         current = current->next;
     }
- */
+
 
     Node * huffman_tree = create_huffman_tree(queue);
     print_huff_tree(huffman_tree, 0);
