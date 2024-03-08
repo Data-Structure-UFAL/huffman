@@ -43,7 +43,8 @@ int is_empty_queue(Huff_Queue * queue){
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
    /*  Node * new_node = create_node(byte, freq); */
 
-    if(is_empty_queue(queue) || (new_node->priority < queue->head->priority) ){
+    if(is_empty_queue(queue) || (new_node->priority < queue->head->priority) ||
+        (new_node->priority == queue->head->priority && new_node->byte < queue->head->byte)){
         new_node->next = queue->head;
         queue->head = new_node;
         queue->size++;
@@ -52,13 +53,14 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
 
     Node * current = queue->head;
 
-    while (current->next != NULL &&  new_node->priority > current->next->priority)
-    {
+    while (current->next != NULL &&
+           (new_node->priority > current->next->priority ||
+            (new_node->priority == current->next->priority && new_node->byte > current->next->byte))) {
         current = current->next;
     }
 
     new_node->next = current->next;
-    current->next = new_node;
+    current->next = new_node; /* verificar isso aqui dps */
     queue->size++;
 }
 
@@ -91,9 +93,10 @@ Node * create_huffman_tree(Huff_Queue * queue){
         new_node->left = left;
         new_node->right = right;
         enqueue_priority(queue, new_node);
+        
     }
 
-    return queue->head;
+    return dequeue(queue);
 }
 
 void print_huff_tree(Node * huff_tree, int heigth){
@@ -106,6 +109,84 @@ void print_huff_tree(Node * huff_tree, int heigth){
     print_huff_tree(huff_tree->right, heigth + 1);
 }
 
+/* Create the dictionary */
+
+int tree_height(Node * root){
+    int left, right;
+
+    if(root == NULL) return -1;
+
+    left = tree_height(root->left);
+    right = tree_height(root->right);
+
+    return (left > right) ? left + 1: right + 1; 
+}
+
+char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASCII and not 256*/
+    char **dictionary;
+    dictionary = malloc(sizeof(char*) * 256); 
+
+    for (int i = 0; i < 256; i++)
+        dictionary[i] =  calloc(column, sizeof(char));
+
+    return dictionary;
+}
+
+void create_dictionary(char **dictionary, Node *root, char *path, int column) {
+    char left[column], right[column];
+
+    if (root->left == NULL && root->right == NULL) {
+        strcpy(dictionary[root->byte], path);
+    } else {
+        strcpy(left, path);
+        strcpy(right, path);
+
+        strcat(left, "0");
+        strcat(right, "1");
+
+        create_dictionary(dictionary, root->left, left, column);
+        create_dictionary(dictionary, root->right, right, column);
+    }
+}
+
+
+void print_dictionary(char ** dictionary){
+    for (int i = 0; i < 256; i++)
+    {
+        if(strlen(dictionary[i]) > 0)
+            printf("\t%3c: %s\n", i, dictionary[i]);
+    }
+    
+}
+
+
+/* CODING JUST TEXT TO LEARNING */ 
+
+int size_text_coding(char ** dictionary, char * text){
+    int length = 0, i = 0;
+
+    while (text[i] != '\n')
+    {
+        length += strlen(dictionary[text[i]]);
+        i++;
+    }
+    return length + 1;
+}
+
+char * coding_text(char ** dictionary, unsigned char * text){
+    int i = 0, size =  size_text_coding(dictionary, text);
+
+    char * code = calloc(size, sizeof(char));
+
+    while (text[i] != '\n')
+    {
+        strcat(code, dictionary[text[i]]);
+        i++;
+    }
+
+    return code;
+    
+}
 
 int main(){
     Huff_Queue * queue = create_queue();
@@ -115,19 +196,35 @@ int main(){
     enqueue_priority(queue, create_node('b', 1));
     enqueue_priority(queue, create_node('c', 3));
     enqueue_priority(queue, create_node('e', 6));
-    enqueue_priority(queue, create_node('r', 9));
+    enqueue_priority(queue, create_node('r', 8));
 
+    
     struct node * current = queue->head;
     while (current != NULL)
     {
         printf("c:%c - f:%d - size: %d\n", current->byte, current->priority, queue->size);
         current = current->next;
     }
-
-
+   
     Node * huffman_tree = create_huffman_tree(queue);
-    print_huff_tree(huffman_tree, 0);
+    int h = tree_height(huffman_tree);
+    printf("%d\n", h); 
+
     
+
+    int column = tree_height(huffman_tree) + 1;
+    char ** dictionary = create_empty_dictionary(column);
+    create_dictionary(dictionary, huffman_tree, "", column);
+
+    print_dictionary(dictionary);
+    
+
+    char * text_coded;
+    char * inicial_string = "aaaaabccceeeeeerrrrrrrr";
+    text_coded = coding_text(dictionary,  inicial_string);
+
+
+    printf("\n\t%s\n", text_coded);
     return 0;
 
 }
