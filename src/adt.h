@@ -69,14 +69,14 @@ Node * create_huffman_tree(Huff_Queue * queue);
 
 
 Node * create_node(unsigned char byte, int frequency){
-    Node *new_node = malloc(sizeof(Node));
+    Node *new_node = (Node *) malloc(sizeof(Node));
 	new_node->priority = frequency;
     new_node->byte = byte;
     return new_node;
 }
 
 Huff_Queue * create_queue(){
-    Huff_Queue * new_queue = malloc(sizeof(Huff_Queue));
+    Huff_Queue * new_queue = (Huff_Queue *) malloc(sizeof(Huff_Queue));
     new_queue->head = NULL;
     new_queue->size = 0;
     return new_queue;
@@ -100,7 +100,7 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
     Node * current = queue->head;
 
     while (current->next != NULL &&
-           (new_node->priority > current->next->priority ||
+            (new_node->priority > current->next->priority ||
             (new_node->priority == current->next->priority && new_node->byte > current->next->byte))) {
         current = current->next;
     }
