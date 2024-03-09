@@ -218,7 +218,74 @@ char * decoding_text(unsigned char text[], Node * root){
     }
 
     return decoding;
+}
+
+
+/* CODING IN ARCHIVE */
+
+void coding(char * text_coded){/* 0011100001 */
+    FILE * file = fopen("compress.medino", "wb");
+
+    if(!file){
+        printf("Problema ao abrir arquivo em Coding()\n");
+        return;
+    }
+
+    int i = 0, j = 7;
+    unsigned char mask, byte = 0;
+
+    while (text_coded[i] != '\0')
+    {
+        mask = 1;
+        if(text_coded[i] == '1'){
+            mask = mask << j;
+            byte = byte | mask;
+        }
+        j--;
+
+        if(j < 0){
+            fwrite(&byte, sizeof(unsigned char), 1, file);
+            byte = 0;
+            j = 7;
+        }
+        i++;
+    }
     
+    if(j != 7) fwrite(&byte, sizeof(unsigned char), 1, file);
+
+
+    fclose(file);
+}
+
+unsigned int is_on_bit(unsigned char byte, int i){
+    unsigned char mask = (1 <<i);
+    return byte & mask;
+}
+
+void decoding(Node * root){
+    FILE * file = fopen("compress.medino", "rb");
+
+    if(!file){
+        printf("Problema ao abrir arquivo em Decoding()\n");
+        return;
+    }
+
+    unsigned char byte; 
+    Node * current = root;
+    while (fread(&byte, sizeof(unsigned char), 1, file))
+    {
+        for (int i = 7; i > - 0; i--)        
+        {
+            current = (is_on_bit(byte, i)) ? current->right : current->left;
+
+            if(current->left == NULL && current->right == NULL){
+                printf("decoding:%c\n", current->byte);
+                current = root;
+            }
+        }
+    }
+
+    fclose(file);
 }
 
 int main(){
@@ -265,6 +332,10 @@ int main(){
     text_decoding = decoding_text(text_coded, huffman_tree);
 
     printf("\t\n %s\n", text_decoding);
+
+    coding(text_coded);
+    decoding(huffman_tree);
+    
     return 0;
 
 }
