@@ -188,6 +188,39 @@ char * coding_text(char ** dictionary, unsigned char * text){
     
 }
 
+/* DECODING JUST TEXT TO LERANING */
+
+char * decoding_text(unsigned char text[], Node * root){
+    int i = 0;
+    Node * aux = root;
+    char temp[2];
+    char * decoding = calloc(strlen(text) , sizeof(char));
+
+
+    while (text[i] != '\0')
+    {
+       
+        if(text[i] == '0')
+            aux = aux->left;
+        else     
+            aux = aux->right;
+
+        if (aux->left == NULL && aux->right == NULL)
+        {
+            temp[0] = aux->byte;
+            temp[1] = '\0';
+
+            strcat(decoding, temp);
+            aux = root;
+        }
+
+        i++;
+    }
+
+    return decoding;
+    
+}
+
 int main(){
     Huff_Queue * queue = create_queue();
 
@@ -225,6 +258,13 @@ int main(){
 
 
     printf("\n\t%s\n", text_coded);
+
+
+
+    char * text_decoding; 
+    text_decoding = decoding_text(text_coded, huffman_tree);
+
+    printf("\t\n %s\n", text_decoding);
     return 0;
 
 }
