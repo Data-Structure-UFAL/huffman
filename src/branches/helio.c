@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define ASCII_LENGTH 256
 
@@ -80,34 +81,28 @@ int main()
 
     int freq[ASCII_LENGTH] = {0};
 
-    char *text = "AABBCCDDDEEEFFGGGHHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXXYYZZ";
+    char *text = "@#$%&((()))!@#@@";
 
     int tam = strlen(text);
 
     for (int i = 0; i < tam; i++)
     {
-        freq[(unsigned char)text[i]]++;
+        freq[(uint8_t)text[i]]++;
     }
 
     for (int i = 0; i < ASCII_LENGTH; i++)
     {
         if (freq[i] > 0)
         {
-            //unsigned char aux = i;
-            //int frequencia = freq[i];
-
-            //Node *new_node = create_node(&aux, &frequencia);
             Node *new_node = create_node(&i, &freq[i]);
 
             enqueue_priority(queue, new_node);
         }
     }
 
-    //print_queue(queue);
+    print_queue(queue);
 
     Node *root = create_huffman_tree(queue);
-
-    printf("Root: %c %d\n", *(unsigned char *)root->right->byte, *(int *)root->right->priority);
 
     print_in_order(root);
 
@@ -121,8 +116,8 @@ Node *create_node(void *byte, void* frequency)
     int *priority = (int *)malloc(sizeof(int));
     *priority = *(int *)frequency;
 
-    unsigned char *new_byte = (unsigned char *)malloc(sizeof(unsigned char));
-    *new_byte = *(unsigned char *)byte;
+    uint8_t *new_byte = (uint8_t *)malloc(sizeof(uint8_t));
+    *new_byte = *(uint8_t *)byte;
 
     new_node->priority = priority;
     new_node->byte = new_byte;
@@ -156,7 +151,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
     /*  Node * new_node = create_node(byte, freq); */
 
     if (is_empty_queue(queue) || (*(int *)new_node->priority < *(int *)queue->head->priority) ||
-        (*(int *)new_node->priority == *(int *)queue->head->priority && *(unsigned char *)new_node->byte < *(unsigned char *)queue->head->byte))
+        (*(int *)new_node->priority == *(int *)queue->head->priority && *(uint8_t *)new_node->byte < *(uint8_t *)queue->head->byte))
     {
 
         new_node->next = queue->head;
@@ -171,7 +166,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
 
     while (current->next != NULL &&
            (*(int *)new_node->priority > *(int *)current->next->priority ||
-            (*(int *)new_node->priority == *(int *)current->next->priority && *(unsigned char *)new_node->byte > *(unsigned char *)current->next->byte)))
+            (*(int *)new_node->priority == *(int *)current->next->priority && *(uint8_t *)new_node->byte > *(uint8_t *)current->next->byte)))
     {
         current = current->next;
     }
@@ -211,8 +206,10 @@ Node *create_huffman_tree(Huff_Queue *queue)
         right = dequeue(queue);
 
         unsigned char asterisco = '*';
+        int sum_priority = *(int *)left->priority + *(int *)right->priority;
 
-        new_node = create_node(&asterisco, (*(int *)left->priority) + (*(int *)right->priority)); // Allocate memory for the new node
+        new_node = create_node(&asterisco, &sum_priority);
+
         new_node->left = left;
         new_node->right = right;
 
@@ -240,8 +237,8 @@ void print_in_order(Node *root)
 {
     if (root != NULL)
     {
-        printf("%c %d\n", *(unsigned char *)root->byte, *(int *)root->priority);
         print_in_order(root->left);
+        printf("%c %d\n", *(unsigned char *)root->byte, *(int *)root->priority);
         print_in_order(root->right);
     }
 }
