@@ -83,7 +83,7 @@ Huff_Queue * create_queue(){
 }
 
 int is_empty_queue(Huff_Queue * queue){
-    return queue->head == NULL;
+    return queue->head == NULL ? 1 : 0;
 }
 
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
@@ -143,6 +143,15 @@ Node * create_huffman_tree(Huff_Queue * queue){
     }
 
     return dequeue(queue);
+}
+
+//FUNCAO DE TESTE PARA FINS DE TESTE
+
+int teste(int i)
+{
+    if(i == 1) return 0;
+
+    return 1;
 }
 
 #endif 
