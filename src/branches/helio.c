@@ -29,7 +29,7 @@ typedef struct
     # PARAMETRO: É passado dois parâmetro, um informando o byte e outro a frequência daquele byte
     # RETORNO: É retornado um nó com as informações passadas
 */
-Node *create_node(void *byte, int frequency);
+Node *create_node(void *byte, void *frequency);
 
 /*
     # OBJETIVO: Criar uma lista
@@ -67,13 +67,6 @@ Node *dequeue(Huff_Queue *queue);
 */
 Node *create_huffman_tree(Huff_Queue *queue);
 
-/*
-    # OBJETIVO: Imprimir a árvore de huffman
-    # PARAM
-    # RETORNO: Não é retornado nada, mas é impresso a árvore de huffman
-*/
-
-
 // testar // ==========================================================================
 void print_in_order(Node *root);
 
@@ -100,9 +93,11 @@ int main()
     {
         if (freq[i] > 0)
         {
-            unsigned char aux = i;
+            //unsigned char aux = i;
+            //int frequencia = freq[i];
 
-            Node *new_node = create_node(&aux, freq[i]);
+            //Node *new_node = create_node(&aux, &frequencia);
+            Node *new_node = create_node(&i, &freq[i]);
 
             enqueue_priority(queue, new_node);
         }
@@ -119,12 +114,12 @@ int main()
     return 0;
 }
 
-Node *create_node(void *byte, int frequency)
+Node *create_node(void *byte, void* frequency)
 {
     Node *new_node = (Node *)malloc(sizeof(Node));
 
     int *priority = (int *)malloc(sizeof(int));
-    *priority = frequency;
+    *priority = *(int *)frequency;
 
     unsigned char *new_byte = (unsigned char *)malloc(sizeof(unsigned char));
     *new_byte = *(unsigned char *)byte;
