@@ -68,6 +68,14 @@ Node *dequeue(Huff_Queue *queue);
 */
 Node *create_huffman_tree(Huff_Queue *queue);
 
+/*
+    # OBJETIVO: Criar uma lista de prioridade
+    # PARAMETRO: É passado um array de frequências e a lista de prioridade
+    # RETORNO: Não é retornado nada, mas é adicionado um novo node na lista de prioridade
+*/
+
+void create_priority_queue(int frequencies[], Huff_Queue *queue);
+
 // testar // ==========================================================================
 void print_in_order(Node *root);
 
@@ -217,6 +225,17 @@ Node *create_huffman_tree(Huff_Queue *queue)
     }
 
     return dequeue(queue);
+}
+
+void create_priority_queue(int frequencies[], Huff_Queue *queue)
+{
+    for (int i = 0; i < ASCII_LENGTH; i++)
+    {
+        if (frequencies[i] > 0)
+        {
+            enqueue_priority(queue, create_node(&i, &frequencies[i]));
+        }
+    }
 }
 
 
