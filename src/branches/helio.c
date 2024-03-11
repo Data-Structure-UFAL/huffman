@@ -116,8 +116,13 @@ int main()
 
     return 0;
 }
-
-Node *create_node(void *byte, void* frequency)
+/*  TALVEZ EU TENHA ALUCIADO, PENSAR MELHOR SE REALMENTE PRECISA DISSO
+    as atribuições devem ser feitas por uma função, a qual será passada como
+    parâmetro, de forma genérica. Exemplo: void (*f)(void * data)
+    na hora de chamar a funcao poderia ser da seguinte forma
+    create_node(void * data, void (*f)(void * data)) 
+ */
+Node *create_node(void *byte, void* frequency) 
 {
     Node *new_node = (Node *)malloc(sizeof(Node));
 
