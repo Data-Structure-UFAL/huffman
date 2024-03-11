@@ -24,7 +24,7 @@ typedef struct {
 
 /*
     # OBJETIVO: Criar um nó
-    # PARAMETRO: É passado dois parâmetro, um informando o byte e outro a frequência daquele byte
+    # PARAMETRO: É passado dois parâmetros, um informando o byte e outro a frequência daquele byte
     # RETORNO: É retornado um nó com as informações passadas
 */
 Node * create_node(unsigned char byte, int frequency);
@@ -83,7 +83,7 @@ Huff_Queue * create_queue(){
 }
 
 int is_empty_queue(Huff_Queue * queue){
-    return queue->head == NULL ? 1 : 0;
+    return queue->head == NULL;
 }
 
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
