@@ -1,0 +1,23 @@
+adt.h
+
+    create_node
+
+    create_queue
+
+    is_empty_queue: Já feita
+
+    enqueue_priority
+
+    dequeue
+
+    create_huffman_tree
+
+utils.h
+
+    initial_message
+
+    object_data
+
+    get_frequency
+
+    read_initial_file
