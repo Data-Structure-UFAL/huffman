@@ -95,7 +95,7 @@ int main()
 
     for (int i = 0; i < tam; i++)
     {
-        freq[(uint8_t)text[i]]++;
+        freq[(unsigned char)text[i]]++;
     }
 
     for (int i = 0; i < ASCII_LENGTH; i++)
@@ -129,8 +129,8 @@ Node *create_node(void *byte, void* frequency)
     int *priority = (int *)malloc(sizeof(int));
     *priority = *(int *)frequency;
 
-    uint8_t *new_byte = (uint8_t *)malloc(sizeof(uint8_t));
-    *new_byte = *(uint8_t *)byte;
+    unsigned char *new_byte = (unsigned char *)malloc(sizeof(unsigned char));
+    *new_byte = *(unsigned char *)byte;
 
     new_node->priority = priority;
     new_node->byte = new_byte;
@@ -164,7 +164,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
     /*  Node * new_node = create_node(byte, freq); */
 
     if (is_empty_queue(queue) || (*(int *)new_node->priority < *(int *)queue->head->priority) ||
-        (*(int *)new_node->priority == *(int *)queue->head->priority && *(uint8_t *)new_node->byte < *(uint8_t *)queue->head->byte))
+        (*(int *)new_node->priority == *(int *)queue->head->priority && *(unsigned char *)new_node->byte < *(unsigned char *)queue->head->byte))
     {
 
         new_node->next = queue->head;
@@ -179,7 +179,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
 
     while (current->next != NULL &&
            (*(int *)new_node->priority > *(int *)current->next->priority ||
-            (*(int *)new_node->priority == *(int *)current->next->priority && *(uint8_t *)new_node->byte > *(uint8_t *)current->next->byte)))
+            (*(int *)new_node->priority == *(int *)current->next->priority && *(unsigned char *)new_node->byte > *(unsigned char *)current->next->byte)))
     {
         current = current->next;
     }
