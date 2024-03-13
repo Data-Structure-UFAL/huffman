@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #define ASCII_LENGTH 256
 
 typedef struct node {
@@ -144,6 +146,155 @@ Node * create_huffman_tree(Huff_Queue * queue){
 
     return dequeue(queue);
 }
+
+/* 
+- Objetivo: Calcular a altura da arvore
+- Parametro: Um no apontando para a raiz da arvore
+- Retorno: Um inteiro representando a altura
+*/
+int tree_height(Node * root){
+    int left, right;
+
+    if(root == NULL) return -1;
+
+    left = tree_height(root->left);
+    right = tree_height(root->right);
+
+    return (left > right) ? left + 1: right + 1; 
+}
+
+/* 
+- Objetivo: Fazer alocação de memória do dicionário
+- Parametro: Um inteiro representndo o numero de colunas
+- Retorno: Um ponteiro que aponta para um array de strings
+*/
+char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASCII and not 256*/
+    char **dictionary;
+    dictionary = malloc(sizeof(char*) * 256); 
+
+    for (int i = 0; i < 256; i++)
+        dictionary[i] =  calloc(column, sizeof(char));
+
+    return dictionary;
+}
+
+/* 
+- Objetivo: Criar um dicionário que referencia o caminho das folhas de um byte 
+- Parametro: Dicionario Alocado, Raiz, Caminho Vazio, Numero de Colunas
+- Retorno: Sem retorno... altera o dicionário por referencia
+*/
+void create_dictionary(char **dictionary, Node *root, char *path, int column) {
+    char left[column], right[column];
+
+    if (root->left == NULL && root->right == NULL) {
+        strcpy(dictionary[root->byte], path);
+    } else {
+        strcpy(left, path);
+        strcpy(right, path);
+
+        strcat(left, "0");
+        strcat(right, "1");
+
+        create_dictionary(dictionary, root->left, left, column);
+        create_dictionary(dictionary, root->right, right, column);
+    }
+}
+
+
+void print_dictionary(char ** dictionary){
+    for (int i = 0; i < 256; i++)
+    {
+        if(strlen(dictionary[i]) > 0)
+            printf("\t%3c: %s\n", i, dictionary[i]);
+    }
+    
+}
+
+void print_huff_tree(Node * huff_tree, int heigth){
+    if(huff_tree->left == NULL && huff_tree->right == NULL){
+        printf("leaf: %c - height: %d\n", huff_tree->byte ,heigth);
+        return;
+    }
+
+    print_huff_tree(huff_tree->left, heigth + 1);
+    print_huff_tree(huff_tree->right, heigth + 1);
+}
+
+
+/* CODIFICAÇÃO DO TEXTO */
+
+/* 
+- Objetivo: Calcular o numero de bits com referencia ao dicionario
+- Parametro: Dicionario, Texto
+- Retorno: Um inteiro representando o numero de bits
+*/
+int size_text_coding(char ** dictionary, char * text){
+    int length = 0, i = 0;
+
+    while (text[i] != '\0')
+    {
+        length += strlen(dictionary[text[i]]);
+        i++;
+    }
+    return length + 1;
+}
+/* 
+- Objetivo: Codificar um texto em bits (formato de texto) com base no dicionario
+- Parametro: Dicionario, Texto
+- Retorno: Uma string de um texto codificado
+*/
+char * coding_text(char ** dictionary, unsigned char * text){
+    int i = 0, size =  size_text_coding(dictionary, text);
+
+    char * code = calloc(size, sizeof(char));
+
+    while (text[i] != '\0')
+    {
+        strcat(code, dictionary[text[i]]);
+        i++;
+    }
+
+    return code;
+    
+}
+
+/* DECODING JUST TEXT TO LERANING */
+
+/* 
+- Objetivo: Decodificar uma sequencia de bits (char) no texto original
+- Parametro: Texto codificado, Raiz da Arvore de  Huffman
+- Retorno: Uma string decodificada 
+*/
+char * decoding_text(unsigned char text[], Node * root){
+    int i = 0;
+    Node * aux = root;
+    char temp[2];
+    char * decoding = calloc(strlen(text) , sizeof(char));
+
+
+    while (text[i] != '\0')
+    {
+       
+        if(text[i] == '0')
+            aux = aux->left;
+        else     
+            aux = aux->right;
+
+        if (aux->left == NULL && aux->right == NULL)
+        {
+            temp[0] = aux->byte;
+            temp[1] = '\0';
+
+            strcat(decoding, temp);
+            aux = root;
+        }
+
+        i++;
+    }
+
+    return decoding;
+}
+
 
 //FUNCAO DE TESTE PARA FINS DE TESTE
 

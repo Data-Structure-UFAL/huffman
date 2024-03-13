@@ -46,10 +46,25 @@ int main()
         }
         
         /* Criar arvore de huffman */
-        Huff_Tree * huff_tree = create_huffman_tree(queue);
+        Node * huff_tree = create_huffman_tree(queue);
+        printf("altura: %d\n", tree_height(huff_tree));
+        print_huff_tree(huff_tree, tree_height(huff_tree));
 
+        /* Montar Dicionário */
+        int column = tree_height(huff_tree) + 1;
+        char ** dictionary = create_empty_dictionary(column);
+        create_dictionary(dictionary, huff_tree, "", column);
+
+        print_dictionary(dictionary);
+
+
+        char * text_coded = coding_text(dictionary, binary_data->byte);
+        printf("\t%s\n", text_coded);
+
+       
+        char * text_decoded = decoding_text(text_coded, huff_tree);
+        printf("\t%s\n", text_decoded);
         
-
         break;
 
     case 2:
