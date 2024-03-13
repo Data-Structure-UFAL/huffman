@@ -25,51 +25,55 @@ typedef struct {
 } Huff_Tree;
 
 /*
-    # OBJETIVO: Criar um nó
-    # PARAMETRO: É passado dois parâmetros, um informando o byte e outro a frequência daquele byte
-    # RETORNO: É retornado um nó com as informações passadas
+    - OBJETIVO: Criar um nó
+    - PARAMETRO: É passado dois parâmetros, um informando o byte e outro a frequência daquele byte
+    - RETORNO: É retornado um nó com as informações passadas
 */
 Node * create_node(unsigned char byte, int frequency);
 
 /*
-    # OBJETIVO: Criar uma lista 
-    # PARAMETRO: Não tem parâmetro
-    # RETORNO: É retornado o head da lista apontando para NULL
+    - OBJETIVO: Criar uma lista 
+    - PARAMETRO: Não tem parâmetro
+    - RETORNO: É retornado o head da lista apontando para NULL
 */
 Huff_Queue * create_queue();
 
 /*
-    # OBJETIVO: Verificar se a lista de prioridade está vazia
-    # PARAMETRO: É passado um ponteiro para a lista de prioridade
-    # RETORNO: É retornado 1 se a lista estiver vazia e 0 caso contrário
+    - OBJETIVO: Verificar se a lista de prioridade está vazia
+    - PARAMETRO: É passado um ponteiro para a lista de prioridade
+    - RETORNO: É retornado 1 se a lista estiver vazia e 0 caso contrário
 */
 int is_empty_queue(Huff_Queue * queue);
 
 /*
-    # OBJETIVO: Adicionar de forma ordenada um novo nó na lista de prioridade
-    # PARAMETRO: É passado um ponteiro para a lista de prioridade, e  o nó que deve ser adicionado
-    # RETORNO: Não é retornado nada, mas é adicionado um novo node na lista de prioridade
+    - OBJETIVO: Adicionar de forma ordenada um novo nó na lista de prioridade
+    - PARAMETRO: É passado um ponteiro para a lista de prioridade, e  o nó que deve ser adicionado
+    - RETORNO: Não é retornado nada, mas é adicionado um novo node na lista de prioridade
 */
 void enqueue_priority(Huff_Queue * queue, Node * new_node);
 
 /*
-    # OBJETIVO: Remover o head de uma Lista
-    # PARAMETRO: É passado a Lista como parâmetro
-    # RETORNO: É retornado o nó removido
+    - OBJETIVO: Remover o head de uma Lista
+    - PARAMETRO: É passado a Lista como parâmetro
+    - RETORNO: É retornado o nó removido
 */
 
 Node * dequeue(Huff_Queue * queue);
 
 /*
-    # OBJETIVO: Criar uma árvore de huffman
-    # PARAMETRO: É passado a Lista como parâmetro
-    # RETORNO: É retornado um nó representando o a Raiz da arvore montada
+    - OBJETIVO: Criar uma árvore de huffman
+    - PARAMETRO: É passado a Lista como parâmetro
+    - RETORNO: É retornado um nó representando o a Raiz da arvore montada
 */
 Node * create_huffman_tree(Huff_Queue * queue);
 
 
 
-
+/* 
+- Objetivo: Alocar e instanciar um No
+- Parametro: Um Byte e a Frequencia do byte
+- Retorno: Um No alocado e instanciado  
+*/
 Node * create_node(unsigned char byte, int frequency){
     Node *new_node = malloc(sizeof(Node));
 	new_node->priority = frequency;
@@ -77,6 +81,11 @@ Node * create_node(unsigned char byte, int frequency){
     return new_node;
 }
 
+/* 
+- Objetivo: Instancia uma lista 
+- Parametro: Sem parametros
+- Retorno: Um struct contendo um ponteiro para o inicio da lista e o tamanho atual 
+*/
 Huff_Queue * create_queue(){
     Huff_Queue * new_queue = malloc(sizeof(Huff_Queue));
     new_queue->head = NULL;
@@ -84,10 +93,20 @@ Huff_Queue * create_queue(){
     return new_queue;
 }
 
+/* 
+- Objetivo: Verificar se a lista esta vazia
+- Parametro: Uma Lista
+- Retorno: Um inteiro representando true ou false
+*/
 int is_empty_queue(Huff_Queue * queue){
     return queue->head == NULL;
 }
 
+/* 
+- Objetivo: Adicionar um no na lista de forma crescente
+- Parametro: Lista,e o No a ser adicionado
+- Retorno: Sem retorno, a lista eh alterada por referencia
+*/
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
    /*  Node * new_node = create_node(byte, freq); */
 
@@ -113,6 +132,11 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
 }
 
 /* CREATE TREE HUFFMAN */
+/* 
+- Objetivo: Remover o primeiro no da lista
+- Parametro: Uma lista
+- Retorno: O no removido 
+*/
 Node * dequeue(Huff_Queue * queue){
     if(is_empty_queue(queue)){
         printf("Queue Underflow\n");
@@ -129,7 +153,11 @@ Node * dequeue(Huff_Queue * queue){
     return dequeued;
 }
 
-
+/* 
+- Objetivo: Construir a arvore de huffman
+- Parametro: Um no apontando para o inicio de uma lista de prioridades
+- Retorno: Um no apontando para a raiz da arvore
+*/
 Node * create_huffman_tree(Huff_Queue * queue){
     Node *left, *right, *new_node;
 
