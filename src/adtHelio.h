@@ -1,8 +1,8 @@
+#ifndef ADTHELIO_H
+#define ADTHELIO_H
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #define ASCII_LENGTH 256
 
 typedef struct node
@@ -68,54 +68,7 @@ Node *dequeue(Huff_Queue *queue);
 */
 Node *create_huffman_tree(Huff_Queue *queue);
 
-/*
-    # OBJETIVO: Criar uma lista de prioridade
-    # PARAMETRO: É passado um array de frequências e a lista de prioridade
-    # RETORNO: Não é retornado nada, mas é adicionado um novo node na lista de prioridade
-*/
 
-void create_priority_queue(int frequencies[], Huff_Queue *queue);
-
-// testar // ==========================================================================
-void print_in_order(Node *root);
-
-void print_queue(Huff_Queue *queue);
-
-// =====================================================================================
-
-int main()
-{
-    Huff_Queue *queue = create_queue();
-
-    int freq[ASCII_LENGTH] = {0};
-
-    char *text = "çopçsxassasasd~";
-
-    int tam = strlen(text);
-
-    for (int i = 0; i < tam; i++)
-    {
-        freq[(unsigned char)text[i]]++;
-    }
-
-    for (int i = 0; i < ASCII_LENGTH; i++)
-    {
-        if (freq[i] > 0)
-        {
-            Node *new_node = create_node(&i, &freq[i]);
-
-            enqueue_priority(queue, new_node);
-        }
-    }
-
-    print_queue(queue);
-
-    Node *root = create_huffman_tree(queue);
-
-    print_in_order(root);
-
-    return 0;
-}
 
 Node *create_node(void *byte, void* frequency) 
 {
@@ -183,7 +136,6 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
     *(int *)(queue->size) += 1;
 }
 
-/* CREATE TREE HUFFMAN */
 Node *dequeue(Huff_Queue *queue)
 {
     if (is_empty_queue(queue))
@@ -225,37 +177,4 @@ Node *create_huffman_tree(Huff_Queue *queue)
     return dequeue(queue);
 }
 
-void create_priority_queue(int frequencies[], Huff_Queue *queue)
-{
-    for (int i = 0; i < ASCII_LENGTH; i++)
-    {
-        if (frequencies[i] > 0)
-        {
-            enqueue_priority(queue, create_node(&i, &frequencies[i]));
-        }
-    }
-}
-
-
-//==================================================================================================================
-
-void print_queue(Huff_Queue *queue)
-{
-    Node *current = queue->head;
-
-    while (current != NULL)
-    {
-        printf("%c %d\n", *(unsigned char *)current->byte, *(int *)current->priority);
-        current = current->next;
-    }
-}
-
-void print_in_order(Node *root)
-{
-    if (root != NULL)
-    {
-        print_in_order(root->left);
-        printf("%c %d\n", *(unsigned char *)root->byte, *(int *)root->priority);
-        print_in_order(root->right);
-    }
-}
+#endif
