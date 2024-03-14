@@ -6,11 +6,76 @@ void setUp(){};
 
 void tearDown(){};
 
+void test_funcao_is_empty_true()
+{
+    //TEST_IGNORE();
+
+    Huff_Queue *queue = create_queue();
+    TEST_ASSERT_EQUAL(1, is_empty_queue(queue));
+}
+
+void test_funcao_is_empty_false()
+{
+    //TEST_IGNORE();
+
+    Huff_Queue *queue = create_queue();
+
+    Node *new_node = create_node('a', 30);
+
+    enqueue_priority(queue, new_node);
+
+    TEST_ASSERT_EQUAL(0, is_empty_queue(queue));
+}
+
+int testando_priority_queue(int *v)
+{
+    int cont = 0;
+    
+    if(v[0] = 65) cont++;
+
+    if(v[1] = 67) cont++;
+
+    if(v[2] = 70) cont++;
+
+    return cont;
+}
+
+void test_funcao_priority_enqueue()
+{
+    //TEST_IGNORE();
+
+    Huff_Queue *queue = create_queue();
+
+    Node *new_node1 = create_node('c', 67);
+    Node *new_node2 = create_node('f', 70);
+    Node *new_node3 = create_node('a', 65);
+
+    enqueue_priority(queue, new_node1);
+    enqueue_priority(queue, new_node2);
+    enqueue_priority(queue, new_node3);    
+
+    //expect to return a = 28, b = 29, c = 30;
+    Node **array = calloc(3,sizeof(Node *));
+    int arraynumbers[3];
+
+    for(int i = 0; i < 3; i++)
+    {
+        array[i] = dequeue(queue);
+        arraynumbers[i] = array[i]->priority;
+    }
+
+    TEST_ASSERT_EQUAL(3, testando_priority_queue(arraynumbers));
+}
+
 void test_funcao_dequeue_underflow()
 {
     TEST_IGNORE();
 
     Huff_Queue *queue = create_queue();
+
+    //TEST_ABORT(dequeue(queue), 1);
+
+    //TEST_ASSERT_ABORT(dequeue(queue));
 
     //PRECISO DA FUNCAO PARA COMPARAR COM UMA STRING
     //TEST_ASSERT_EQUAL('Queue Underflow\n', dequeue(queue));
@@ -44,27 +109,6 @@ void test_funcao_dequeue_true()
     TEST_ASSERT_EQUAL_PTR(new_node3, dequeued);
 }
 
-void test_funcao_is_empty_true()
-{
-    //TEST_IGNORE();
-
-    Huff_Queue *queue = create_queue();
-    TEST_ASSERT_EQUAL(1, is_empty_queue(queue));
-}
-
-void test_funcao_is_empty_false()
-{
-    //TEST_IGNORE();
-
-    Huff_Queue *queue = create_queue();
-
-    Node *new_node = create_node('a', 30);
-
-    enqueue_priority(queue, new_node);
-
-    TEST_ASSERT_EQUAL(0, is_empty_queue(queue));
-}
-
 int testando_funcao_is_empty()
 {
     UNITY_BEGIN();
@@ -75,11 +119,11 @@ int testando_funcao_is_empty()
     return UNITY_END();
 }
 
-int testando_funcao_enqueue_priority()
+int testando_funcao_priority_enqueue()
 {
     UNITY_BEGIN();
 
-    //RUN_TEST();
+    RUN_TEST(test_funcao_priority_enqueue);
     //RUN_TEST();
 
     return UNITY_END();
@@ -112,7 +156,7 @@ int main()
             testando_funcao_is_empty();
             break;
         case 2:
-
+            testando_funcao_priority_enqueue();
             break;
         case 3:
             testando_funcao_dequeue();

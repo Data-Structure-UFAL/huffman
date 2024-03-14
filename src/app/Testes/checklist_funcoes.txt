@@ -10,7 +10,7 @@ adt.h
     ->TO FAZENDO
 
     dequeue: so vou fazer um dequeue e ver se o resultado que volta eh o mesmo
-    ->TO FAZENDO
+    ->ESTA PRONTA UMA PARTE, FALTA SO O UNDERFLOW
 
     create_huffman_tree:
 
