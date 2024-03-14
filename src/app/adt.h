@@ -256,7 +256,7 @@ void print_huff_tree(Node * huff_tree, int heigth){
 - Parametro: Dicionario, Texto
 - Retorno: Um inteiro representando o numero de bits
 */
-int size_text_coding(char ** dictionary, char * text){
+int size_text_coding(char ** dictionary, unsigned char * text){
     int length = 0, i = 0;
 
     while (text[i] != '\0')
@@ -273,7 +273,7 @@ int size_text_coding(char ** dictionary, char * text){
 */
 char * coding_text(char ** dictionary, unsigned char * text){
     int i = 0, size =  size_text_coding(dictionary, text);
-
+    printf("\tsize_text: %d\n", size);
     char * code = calloc(size, sizeof(char));
 
     while (text[i] != '\0')
@@ -293,11 +293,11 @@ char * coding_text(char ** dictionary, unsigned char * text){
 - Parametro: Texto codificado, Raiz da Arvore de  Huffman
 - Retorno: Uma string decodificada 
 */
-char * decoding_text(unsigned char text[], Node * root){
+unsigned char * decoding_text(char text[], Node * root){
     int i = 0;
     Node * aux = root;
     char temp[2];
-    char * decoding = calloc(strlen(text) , sizeof(char));
+    unsigned char * decoding = calloc(strlen(text) , sizeof(unsigned char));
 
 
     while (text[i] != '\0')
@@ -321,6 +321,72 @@ char * decoding_text(unsigned char text[], Node * root){
     }
 
     return decoding;
+}
+
+/* CODING IN ARCHIVE */
+void coding(char * text_coded){
+    FILE * file = fopen("compress.medino", "wb");
+
+    if(!file){
+        printf("Problema ao abrir arquivo em Coding()\n");
+        return;
+    }
+
+    int i = 0, j = 7;
+    unsigned char mask, byte = 0;
+
+    while (text_coded[i] != '\0')
+    {
+        mask = 1;
+        if(text_coded[i] == '1'){
+            mask = mask << j;
+            byte = byte | mask;
+        }
+        j--;
+
+        if(j < 0){
+            fwrite(&byte, sizeof(unsigned char), 1, file);
+            byte = 0;
+            j = 7;
+        }
+        i++;
+    }
+    
+    if(j != 7) fwrite(&byte, sizeof(unsigned char), 1, file);
+
+
+    fclose(file);
+}
+
+unsigned int is_on_bit(unsigned char byte, int i){
+    unsigned char mask = (1 <<i);
+    return byte & mask;
+}
+
+void decoding(Node * root){
+    FILE * file = fopen("compress.medino", "rb");
+
+    if(!file){
+        printf("Problema ao abrir arquivo em Decoding()\n");
+        return;
+    }
+
+    unsigned char byte; 
+    Node * current = root;
+    while (fread(&byte, sizeof(unsigned char), 1, file))
+    {
+        for (int i = 7; i > - 0; i--)        
+        {
+            current = (is_on_bit(byte, i)) ? current->right : current->left;
+
+            if(current->left == NULL && current->right == NULL){
+                printf("decoding:%c\n", current->byte);
+                current = root;
+            }
+        }
+    }
+
+    fclose(file);
 }
 
 
