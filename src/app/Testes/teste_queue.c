@@ -6,6 +6,33 @@ void setUp(){};
 
 void tearDown(){};
 
+void test_funcao_dequeue_underflow()
+{
+    TEST_IGNORE();
+
+    Huff_Queue *queue = create_queue();
+
+    //PRECISO DA FUNCAO PARA COMPARAR COM UMA STRING
+    //TEST_ASSERT_EQUAL('Queue Underflow\n', dequeue(queue));
+
+}
+
+void test_funcao_dequeue_true()
+{
+    TEST_IGNORE();
+    
+    Huff_Queue *queue = create_queue();
+
+    Node *new_node = create_node('a', 30);
+
+    enqueue_priority(queue, new_node);
+
+    dequeue(queue);
+
+    //PRECISO DA FUNCAO PARA COMPARAR COM UM ENDERECO
+    TEST_ASSERT_EQUAL(queue, dequeue(queue));
+}
+
 void test_funcao_is_empty_true()
 {
     //TEST_IGNORE();
@@ -51,8 +78,8 @@ int testando_funcao_dequeue()
 {
     UNITY_BEGIN();
 
-    //RUN_TEST();
-    //RUN_TEST();
+    RUN_TEST(test_funcao_dequeue_underflow);
+    RUN_TEST(test_funcao_dequeue_true);
 
     return UNITY_END();
 }
@@ -77,7 +104,7 @@ int main()
 
             break;
         case 3:
-            
+            testando_funcao_dequeue();
             break;
         default:
             puts("Opcao Invalida.");
