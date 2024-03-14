@@ -19,18 +19,29 @@ void test_funcao_dequeue_underflow()
 
 void test_funcao_dequeue_true()
 {
-    TEST_IGNORE();
+    //TEST_IGNORE();
     
+    //criamos a fila
     Huff_Queue *queue = create_queue();
 
-    Node *new_node = create_node('a', 30);
+    //criamos alguns nos
+    Node *new_node1 = create_node('b', 29);
+    Node *new_node2 = create_node('c', 30);
+    Node *new_node3 = create_node('a', 28);
 
-    enqueue_priority(queue, new_node);
 
-    dequeue(queue);
+    //adicionamos os nos na fila
+    enqueue_priority(queue, new_node1);
+    enqueue_priority(queue, new_node2);
+    enqueue_priority(queue, new_node3);
 
-    //PRECISO DA FUNCAO PARA COMPARAR COM UM ENDERECO
-    TEST_ASSERT_EQUAL(queue, dequeue(queue));
+    //fizemos o dequeue, que retorna o no que foi feito o dequeue
+    //que no nosso caso, sera o new_node 3
+    Node *dequeued = dequeue(queue);
+
+    //aqui, testamos se o no que a funcao dequeue retornou foi o mesmo
+    //que mandamos fazer o dequeue
+    TEST_ASSERT_EQUAL_PTR(new_node3, dequeued);
 }
 
 void test_funcao_is_empty_true()
