@@ -37,7 +37,25 @@ int testando_funcao_is_empty()
     return UNITY_END();
 }
 
+int testando_funcao_enqueue_priority()
+{
+    UNITY_BEGIN();
 
+    //RUN_TEST();
+    //RUN_TEST();
+
+    return UNITY_END();
+}
+
+int testando_funcao_dequeue()
+{
+    UNITY_BEGIN();
+
+    //RUN_TEST();
+    //RUN_TEST();
+
+    return UNITY_END();
+}
 
 int main()
 {

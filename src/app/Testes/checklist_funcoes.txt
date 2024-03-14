@@ -7,10 +7,12 @@ adt.h
     is_empty_queue: Já feita
 
     enqueue_priority: enviar 5 números e ver se eles estao na ordem certa e com caracteres e caracteres especial
+    ->TO FAZENDO
 
     dequeue: so vou fazer um dequeue e ver se o resultado que volta eh o mesmo
+    ->TO FAZENDO
 
-    create_huffman_tree: 
+    create_huffman_tree:
 
 utils.h
 
