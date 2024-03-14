@@ -1,16 +1,16 @@
 adt.h
 
-    create_node
+    create_node: Ver se o item que retornou foi o mesmo que veio, printar priority e o byte
 
-    create_queue
+    create_queue: se o new_queue == NULL, tá verdadeiro
 
     is_empty_queue: Já feita
 
-    enqueue_priority
+    enqueue_priority: enviar 5 números e ver se eles estao na ordem certa e com caracteres e caracteres especial
 
-    dequeue
+    dequeue: so vou fazer um dequeue e ver se o resultado que volta eh o mesmo
 
-    create_huffman_tree
+    create_huffman_tree: 
 
 utils.h
 
