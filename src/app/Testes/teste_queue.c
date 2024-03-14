@@ -54,7 +54,6 @@ void test_funcao_priority_enqueue()
     enqueue_priority(queue, new_node2);
     enqueue_priority(queue, new_node3);    
 
-    //expect to return a = 28, b = 29, c = 30;
     Node **array = calloc(3,sizeof(Node *));
     int arraynumbers[3];
 
@@ -139,7 +138,7 @@ int testando_funcao_dequeue()
     return UNITY_END();
 }
 
-int main()
+void opcoes()
 {
     int opcao;
 
@@ -163,7 +162,17 @@ int main()
             break;
         default:
             puts("Opcao Invalida.");
+            puts("Selecione outra opcao.");
+            opcoes();
             break;
     }
-    
+
+    return;
+}
+
+int main()
+{
+    opcoes();
+
+    return 0;    
 }
