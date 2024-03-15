@@ -17,7 +17,7 @@ typedef struct node
 typedef struct
 {
     Node *head;
-    void *size;
+    int size;
 } Huff_Queue;
 
 typedef struct
@@ -94,10 +94,7 @@ Huff_Queue *create_queue()
     Huff_Queue *new_queue = (Huff_Queue *)malloc(sizeof(Huff_Queue));
 
     new_queue->head = NULL;
-
-    int *size = (int *)malloc(sizeof(int));
-    *size = 0;
-    new_queue->size = size;
+    new_queue->size = 0;
 
     return new_queue;
 }
@@ -115,8 +112,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
 
         new_node->next = queue->head;
         queue->head = new_node;
-
-        *(int *)(queue->size) += 1;
+        queue->size++;
 
         return;
     }
@@ -133,7 +129,7 @@ void enqueue_priority(Huff_Queue *queue, Node *new_node)
     new_node->next = current->next;
     current->next = new_node;
 
-    *(int *)(queue->size) += 1;
+    queue->size++;
 }
 
 Node *dequeue(Huff_Queue *queue)
@@ -149,7 +145,7 @@ Node *dequeue(Huff_Queue *queue)
     queue->head = queue->head->next;
     dequeued->next = NULL;
 
-    *(int *)queue->size -= 1;
+    queue->size--;
 
     return dequeued;
 }
@@ -158,7 +154,7 @@ Node *create_huffman_tree(Huff_Queue *queue)
 {
     Node *left, *right, *new_node;
 
-    while (*(int *)queue->size > 1)
+    while (queue->size > 1)
     {
         left = dequeue(queue);
         right = dequeue(queue);
