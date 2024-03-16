@@ -111,10 +111,35 @@ void teste_huff_tree()
     enqueue_priority(queue, new_node9);
     enqueue_priority(queue, new_node10);
 
+    //aqui estamos criando a arvore de huffman
     Node *root = create_huffman_tree(queue);
 
-    printf("%c\n", root->right->byte);
+    //printf("%c\n", root->left->right->right->byte);
 
+    char teste = root->left->byte;
+    
+    //Para simplificar, estou testando para saber se o caminho das folhas esta correto
+    TEST_ASSERT_EQUAL_CHAR('a', root->left->right->left->left->left->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('b', root->left->right->left->left->right->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('c', root->left->right->left->right->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('d', root->right->right->left->left->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('e', root->right->right->left->right->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('f', root->left->right->right->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('g', root->right->left->left->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('h', root->right->left->right->byte);
+    
+    TEST_ASSERT_EQUAL_CHAR('i', root->right->right->right->byte);
+
+    TEST_ASSERT_EQUAL_CHAR('j', root->left->left->byte);
+
+    return;
 }
 
 int main()
@@ -122,7 +147,8 @@ int main()
     UNITY_BEGIN();
 
     RUN_TEST(teste_fila);
-    teste_huff_tree();
+    RUN_TEST(teste_huff_tree);
+    //teste_huff_tree();
 
     return UNITY_END();
 }
