@@ -1,13 +1,9 @@
 # Makefile
 
 all:
-	@echo "Bem vindo aos testes do huffman. Por favor, escolha uma opção."
-	@echo "Digite make (estrutua de dados que deseja testar)."
-
-	@echo "Opcoes:"
-	@echo "queue"
-	@echo "tree"
-	@echo "utils"
+	gcc teste_all.c Unity/unity.c -o teste_all.x
+	./teste_all.x
+	rm teste_all.x
 
 
 queue:

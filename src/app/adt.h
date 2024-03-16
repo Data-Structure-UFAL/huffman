@@ -70,7 +70,7 @@ Node * create_huffman_tree(Huff_Queue * queue);
 
 
 /* 
-- Objetivo: Alocar e instanciar um No
+- Objetivo: Alocar e instanciar uhm No
 - Parametro: Um Byte e a Frequencia do byte
 - Retorno: Um No alocado e instanciado  
 */

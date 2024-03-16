@@ -14,6 +14,8 @@ adt.h
 
     create_huffman_tree:
 
+    testar apenas a inserção e a remoção
+
 utils.h
 
     initial_message
