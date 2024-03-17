@@ -7,7 +7,7 @@
 
 typedef struct {
   unsigned char * byte;
-  long size;
+  size_t size;
 } object_data;
 
 

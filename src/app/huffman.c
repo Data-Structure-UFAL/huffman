@@ -15,13 +15,9 @@ int main()
     switch (choice)
     {
     case 1:
-        printf("Comprindo arquivo: %s\n", path);
-        
-        /* ### PROCESSO DE COMPRESSÃO ### */
 
         /* Ler arquivo em binário */
         object_data * binary_data= read_initial_file(path);
-        printf("\tbyte: %s\n\tsize: %ld\n", binary_data->byte, binary_data->size);
 
         /* Criar lista de frequencia */
         int arr_freq[ASCII_LENGTH];
@@ -37,34 +33,29 @@ int main()
             enqueue_priority(queue, new_node);
            }
         }
-
-        Node * current = queue->head;
-        while (current != NULL)
-        {
-            printf("\tc: %c  -  f: %d\n", current->byte, current->priority );
-            current = current->next;
-        }
         
         /* Criar arvore de huffman */
         Node * huff_tree = create_huffman_tree(queue);
-        printf("altura: %d\n", tree_height(huff_tree));
-        print_huff_tree(huff_tree, tree_height(huff_tree));
 
         /* Montar Dicionário */
         int column = tree_height(huff_tree) + 1;
         char ** dictionary = create_empty_dictionary(column);
         create_dictionary(dictionary, huff_tree, "", column);
 
-        print_dictionary(dictionary);
 
 
-        char * text_coded = coding_text(dictionary, binary_data->byte);
-        printf("\t%s\n", text_coded);
+        char * text_coded = coding_text(dictionary, binary_data);
 
-       
-        char * text_decoded = decoding_text(text_coded, huff_tree);
-        printf("\t%s\n", text_decoded);
-        
+        int trashSize = trash_size(dictionary, binary_data);
+        int treeSize = size_tree(huff_tree);
+
+        int initial_header =  int_to_binary(trashSize, treeSize);
+
+        int qts_bytes_completos = size_text_coding(dictionary,binary_data);
+        coding(text_coded);
+
+        decoding(huff_tree, trash_size, qts_bytes_completos);
+               
         break;
 
     case 2:

@@ -78,6 +78,8 @@ Node * create_node(unsigned char byte, int frequency){
     Node *new_node = malloc(sizeof(Node));
 	new_node->priority = frequency;
     new_node->byte = byte;
+    new_node->left = NULL; 
+    new_node->right = NULL; 
     return new_node;
 }
 
@@ -110,8 +112,7 @@ int is_empty_queue(Huff_Queue * queue){
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
    /*  Node * new_node = create_node(byte, freq); */
 
-    if(is_empty_queue(queue) || (new_node->priority < queue->head->priority) ||
-        (new_node->priority == queue->head->priority && new_node->byte < queue->head->byte)){
+    if(is_empty_queue(queue) || (new_node->priority <= queue->head->priority)){
         new_node->next = queue->head;
         queue->head = new_node;
         queue->size++;
@@ -120,9 +121,7 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
 
     Node * current = queue->head;
 
-    while (current->next != NULL &&
-           (new_node->priority > current->next->priority ||
-            (new_node->priority == current->next->priority && new_node->byte > current->next->byte))) {
+    while (current->next != NULL && (new_node->priority > current->next->priority)){
         current = current->next;
     }
 
@@ -183,7 +182,7 @@ Node * create_huffman_tree(Huff_Queue * queue){
 int tree_height(Node * root){
     int left, right;
 
-    if(root == NULL) return -1;
+    if(root == NULL) return - 1;
 
     left = tree_height(root->left);
     right = tree_height(root->right);
@@ -256,34 +255,31 @@ void print_huff_tree(Node * huff_tree, int heigth){
 - Parametro: Dicionario, Texto
 - Retorno: Um inteiro representando o numero de bits
 */
-int size_text_coding(char ** dictionary, unsigned char * text){
+int size_text_coding(char ** dictionary, object_data * data){
     int length = 0, i = 0;
 
-    while (text[i] != '\0')
+    for (int i = 0; i < data->size; i++)
     {
-        length += strlen(dictionary[text[i]]);
-        i++;
+        length += strlen(dictionary[data->byte[i]]);
     }
-    return length + 1;
+    
+    return length;
 }
 /* 
 - Objetivo: Codificar um texto em bits (formato de texto) com base no dicionario
 - Parametro: Dicionario, Texto
 - Retorno: Uma string de um texto codificado
 */
-char * coding_text(char ** dictionary, unsigned char * text){
-    int i = 0, size =  size_text_coding(dictionary, text);
-    printf("\tsize_text: %d\n", size);
+char * coding_text(char ** dictionary, object_data * data){
+    int size =  size_text_coding(dictionary, data) + 1;
     char * code = calloc(size, sizeof(char));
 
-    while (text[i] != '\0')
-    {
-        strcat(code, dictionary[text[i]]);
-        i++;
-    }
-
+   for (int i = 0; i < data->size; i++)
+   {
+     strcat(code, dictionary[data->byte[i]]);
+   }
+   
     return code;
-    
 }
 
 /* DECODING JUST TEXT TO LERANING */
@@ -321,6 +317,42 @@ unsigned char * decoding_text(char text[], Node * root){
     }
 
     return decoding;
+}
+
+
+int trash_size(char ** dictionary, object_data * data){
+    return 8 - (size_text_coding(dictionary, data) % 8);
+}
+
+int size_tree(Node * node){
+    if(node == NULL){
+        return 0;
+    }
+    return size_tree(node->left) + size_tree(node->right) + 1;
+}
+
+int int_to_binary(int trash, int size_tree){ 
+    int trash_size_b = 0;
+    
+    for (int i = 2; i >= 0; i--)
+    {
+        int mask = (1 << i); 
+
+        if(trash & mask)
+            trash_size_b = trash_size_b | (1 << i);
+    }
+    
+    trash_size_b = trash_size_b << 13;
+    
+    for (int i = 12; i >= 0; i--)
+    {
+        int mask = (1 << i);
+
+        if(size_tree & mask)
+            trash_size_b = trash_size_b | (1 << i);
+    }
+    
+    return trash_size_b;
 }
 
 /* CODING IN ARCHIVE */
@@ -363,30 +395,46 @@ unsigned int is_on_bit(unsigned char byte, int i){
     return byte & mask;
 }
 
-void decoding(Node * root){
-    FILE * file = fopen("compress.medino", "rb");
+void decoding(Node * root, int trash_size, int qts_bytes_completos){
+    FILE * compress_file = fopen("compress.medino", "rb");
 
-    if(!file){
-        printf("Problema ao abrir arquivo em Decoding()\n");
+    if(!compress_file){
+        printf("Problema ao abrir arquivo em compress_file\n");
+        return;
+    }
+
+    FILE  * decompress_file = fopen("decompress.mkv", "wb");
+    if(!decompress_file){
+        printf("Problema ao abrir arquivo em decompress_file\n");
         return;
     }
 
     unsigned char byte; 
     Node * current = root;
-    while (fread(&byte, sizeof(unsigned char), 1, file))
+
+   
+
+    while (fread(&byte, sizeof(unsigned char), 1, compress_file))
     {
-        for (int i = 7; i > - 0; i--)        
+        
+        for (int i = 7; i >= 0; i--)        
         {
+            
             current = (is_on_bit(byte, i)) ? current->right : current->left;
 
+            if(qts_bytes_completos < 0) break;
+
             if(current->left == NULL && current->right == NULL){
-                printf("decoding:%c\n", current->byte);
+                /* printf("qtdbits: %d decompress... %c\n", qts_bytes_completos, current->byte); */
+                fwrite(&current->byte, sizeof(unsigned char), 1, decompress_file);
                 current = root;
             }
+            qts_bytes_completos--;
         }
     }
 
-    fclose(file);
+    fclose(compress_file);
+    fclose(decompress_file);
 }
 
 
@@ -397,6 +445,19 @@ int teste(int i)
     if(i == 1) return 0;
 
     return 1;
+}
+
+
+void print_pre_order(Node * root)
+{
+	if (root != NULL) {
+		
+        printf("%c", root->byte);
+
+
+		print_pre_order(root->left);
+		print_pre_order(root->right);
+	}
 }
 
 #endif 
