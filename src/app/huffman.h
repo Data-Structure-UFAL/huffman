@@ -101,7 +101,7 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     printf("qtd bytes completo: %d\n", qts_bytes_completos);
 
-    decoding(huff_tree->root, qts_bytes_completos);
+    decoding(huff_tree->root, qts_bytes_completos, tree_size, trash);
 
 }
 
