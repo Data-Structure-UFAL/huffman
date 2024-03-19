@@ -57,26 +57,42 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     /* ler header (Extrair Numero do Lixo e o Size da arvore) */
 
-    FILE * file = fopen("compress.huff", "rb"); /* !!! REVER ESSE MODO DE LER OS 16 PRIMEIROS BITS */
+    FILE * file = fopen("compress.huff", "rb"); /* Verificar o porque de quando ler byte a byte ler invertido os 16 bits */
 
-    short first_16_bits = 0;
-    fread(&first_16_bits, sizeof(short), 1, file);
+    unsigned short first_16_bits = 0;
+    fread(&first_16_bits, sizeof(unsigned short), 1, file);
 
     fclose(file);
 
-    /* printf("header readed : int %d", first_16_bits); */
-
-    printf("Numero de bytes: %ld\n", data->size);
-    for (int i = 2; i < data->size; i++)
-    {
-        printf("readed: %c\n", data->byte);
-    }
-    
+    unsigned short  trash = get_trash(first_16_bits);
+    unsigned short  tree_size = get_size_tree(first_16_bits);
     
     /* construir arvore */
+    Node * huff_tree = malloc(sizeof(Node));
+    huff_tree = NULL;
+
+    /* Montando dados em preordem */
+    unsigned char preorder[tree_size]; /* add \0 ? */
+    preorder[tree_size] = '\0';
+    for (int i = 0; i < tree_size; i++)
+    {
+        int current_index_file = i + 2;
+        preorder[i] = data->byte[current_index_file];
+        
+    }
+    printf("preorder: %s\n", preorder);
+
+    int index = 0;
 
 
-    /* int qts_bytes_completos = size_text_coding(dictionary,binary_data); */
+    /* Revisar logica de tratar o lixo */
+
+
+    int qts_bytes_completos = data->size - 2 - tree_size;
+    if(trash) qts_bytes_completos--;
+
+    printf("qtd bytes completo: %d\n", qts_bytes_completos);
+
     /*  decoding(huff_tree, trash_size, qts_bytes_completos) */
 
 }

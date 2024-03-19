@@ -111,4 +111,52 @@ void get_frequency(object_data * data, int arr_frequency[]){
 }
 
 
+void write_header(unsigned short first_16_bits, char * preorder_tree, int size_tree){
+    FILE * file = fopen("compress.huff", "wb");
+
+    if(!file){
+        printf("Erro ao abrir compress.huff em insertionHeader()\n");
+        abort();
+    }
+
+    size_t bool = fwrite(&first_16_bits, sizeof(unsigned short), 1, file);
+    printf("size_t bool: %ld", bool);
+    printf("Writed: %d\n", first_16_bits);
+
+    for (int i = 0; i < size_tree; i++)
+    {
+        fwrite(&preorder_tree[i], sizeof(unsigned char), 1, file);
+        printf("Writed: %c\n", preorder_tree[i]);
+    }
+    
+    fclose(file);
+}
+
+unsigned short get_trash(unsigned short first_16_bits){
+    unsigned short trash = 0;
+
+    for (int i = 15; i >= 13; i--){
+       unsigned short mask = 1u << i;
+       if(first_16_bits & mask){
+         trash = trash | (1u << i);
+       }
+    }
+    trash = trash >> 13;
+    return trash;
+}
+
+int get_size_tree(unsigned short first_16_bits){
+    unsigned short tree_size = 0;
+
+    for (int i = 12; i >= 0; i--){
+       unsigned short mask = 1u << i;
+       if(first_16_bits & mask){
+         tree_size = tree_size | (1u << i);
+       }
+    }
+    return tree_size;
+}
+
+
+
 #endif
