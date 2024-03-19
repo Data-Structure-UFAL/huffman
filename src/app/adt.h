@@ -328,36 +328,41 @@ int size_tree(Node * node){
     if(node == NULL){
         return 0;
     }
+ 
+    if(node->left == NULL && node->right == NULL && (node->byte == '*' || node->byte == '\\')) {
+        return 2;
+    }
+
     return size_tree(node->left) + size_tree(node->right) + 1;
 }
 
-int int_to_binary(int trash, int size_tree){ 
-    int trash_size_b = 0;
-    
+unsigned short int_to_binary(int trash, int size_tree) {
+    unsigned short first_16_bits = 0;
+
     for (int i = 2; i >= 0; i--)
     {
-        int mask = (1 << i); 
-
-        if(trash & mask)
-            trash_size_b = trash_size_b | (1 << i);
+        int mask = 1 << i;
+        if(trash & mask){
+            first_16_bits = first_16_bits | (1u << i);
+        }
     }
-    
-    trash_size_b = trash_size_b << 13;
-    
+
+    first_16_bits = first_16_bits << 13;
+
     for (int i = 12; i >= 0; i--)
     {
-        int mask = (1 << i);
-
-        if(size_tree & mask)
-            trash_size_b = trash_size_b | (1 << i);
+        int mask = 1 << i;
+        if(size_tree & mask){
+            first_16_bits = first_16_bits | (1u << i);
+        }
     }
-    
-    return trash_size_b;
+
+    return first_16_bits; 
 }
 
 /* CODING IN ARCHIVE */
-void coding(char * text_coded){
-    FILE * file = fopen("compress.medino", "wb");
+void create_file_compressed(char * text_coded){
+    FILE * file = fopen("compress.huff", "ab");
 
     if(!file){
         printf("Problema ao abrir arquivo em Coding()\n");
@@ -447,17 +452,57 @@ int teste(int i)
     return 1;
 }
 
-
-void print_pre_order(Node * root)
+void pre_order_tree(Node * root, char * preorder, int *index)
 {
-	if (root != NULL) {
-		
-        printf("%c", root->byte);
+    if (root != NULL) {
+        if(root->left == NULL && root->right == NULL && (root->byte == '\\'|| root->byte == '*' ))
+        {
+            preorder[*index] = '\\';
+            (*index)++;
+        }
 
-
-		print_pre_order(root->left);
-		print_pre_order(root->right);
-	}
+        preorder[*index] = root->byte;
+        (*index)++;
+        pre_order_tree(root->left, preorder, index);
+        pre_order_tree(root->right, preorder, index);
+    }
 }
+
+Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
+
+    if (*index < size)
+    {
+        if (tree[*index] == '*') {
+            // Create a new node with the special character '*'
+            arvore = create_node('*', 0);
+            *index += 1;
+
+            // Recursively read left and right subtrees
+            arvore->left = read_pre_order(tree, index, arvore->left, size);
+            arvore->right = read_pre_order(tree, index, arvore->right, size);
+        }
+        else if (tree[*index] == '\\') {
+            // Move to the next character
+            *index += 1;
+            
+            // Create a new node with the character following '\'
+            arvore = create_node(tree[*index], 0);
+
+            // Move to the next character
+            *index += 1;
+        }
+        else
+        {
+            // Create a new node with the current character
+            arvore = create_node(tree[*index], 0);
+
+            // Move to the next character
+            *index += 1;
+        }
+
+    }
+    return arvore;
+}
+
 
 #endif 
