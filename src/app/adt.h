@@ -400,24 +400,24 @@ unsigned int is_on_bit(unsigned char byte, int i){
     return byte & mask;
 }
 
-void decoding(Node * root, int trash_size, int qts_bytes_completos){
-    FILE * compress_file = fopen("compress.medino", "rb");
+void decoding(Node * root, int qts_bytes_completos){
+    FILE * compress_file = fopen("compress.huff", "rb");
 
     if(!compress_file){
         printf("Problema ao abrir arquivo em compress_file\n");
         return;
     }
 
-    FILE  * decompress_file = fopen("decompress.mkv", "wb");
+    FILE  * decompress_file = fopen("decompress.txt", "wb");
     if(!decompress_file){
         printf("Problema ao abrir arquivo em decompress_file\n");
         return;
     }
 
-    unsigned char byte; 
+    unsigned char byte;
     Node * current = root;
 
-   
+
 
     while (fread(&byte, sizeof(unsigned char), 1, compress_file))
     {
@@ -504,5 +504,12 @@ Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
     return arvore;
 }
 
+void print_pre_order(Node *arvore) {
+    if (arvore != NULL) {
+        printf("%c ", arvore->byte);
+        print_pre_order(arvore->left);
+        print_pre_order(arvore->right);
+    }
+}
 
 #endif 

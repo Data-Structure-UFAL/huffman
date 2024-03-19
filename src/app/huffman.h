@@ -66,10 +66,10 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     unsigned short  trash = get_trash(first_16_bits);
     unsigned short  tree_size = get_size_tree(first_16_bits);
-    
-    /* construir arvore */
-    Node * huff_tree = malloc(sizeof(Node));
-    huff_tree = NULL;
+
+    //apagar
+    printf("trash %d\n", trash);
+    printf("trash size %d\n", tree_size);
 
     /* Montando dados em preordem */
     unsigned char preorder[tree_size]; /* add \0 ? */
@@ -84,6 +84,14 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     int index = 0;
 
+    /* construir arvore */
+    Huff_Tree * huff_tree = (Huff_Tree *)malloc(sizeof(Huff_Tree));
+    huff_tree->root = NULL;
+
+    huff_tree->root = read_pre_order(preorder, &index, huff_tree->root, tree_size);
+
+    //apagar
+    print_pre_order(huff_tree->root);
 
     /* Revisar logica de tratar o lixo */
 
@@ -93,7 +101,7 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     printf("qtd bytes completo: %d\n", qts_bytes_completos);
 
-    /*  decoding(huff_tree, trash_size, qts_bytes_completos) */
+    decoding(huff_tree->root, qts_bytes_completos);
 
 }
 

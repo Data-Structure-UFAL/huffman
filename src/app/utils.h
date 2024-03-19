@@ -157,6 +157,4 @@ int get_size_tree(unsigned short first_16_bits){
     return tree_size;
 }
 
-
-
 #endif
