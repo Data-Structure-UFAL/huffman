@@ -16,19 +16,14 @@ int main()
     switch (choice)
     {
     case 1:
-
         compress(path);
-
-
-        /* int qts_bytes_completos = size_text_coding(dictionary,binary_data);
-
-        decoding(huff_tree, trash_size, qts_bytes_completos); */
-               
-        decompress("compress.huff", "");
         break;
 
     case 2:
-        printf("Descomprindo arquivo: %s\n", path);
+        puts("Digita como deve ser salvo o arquivo. Exemplo: 'imagem.png'\n");
+        char path_decompress[255];
+        scanf("%s", path);
+        decompress("compress.huff", path_decompress);
         break;
     
     default:
