@@ -1,4 +1,6 @@
 #include "../app/adt.h"
+#include "../app/utils.h"
+//#include "../app/huffman.h"
 #include "Unity/unity.h"
 
 void setUp(){};
@@ -43,35 +45,26 @@ void teste_fila()
     //se em um dos casos falhar, o teste falha como um todo
     //a ordem que eh feita os dequeues eh new_node 3, 1, 2, 4, 10, 8, 6, 5, 7, 9
     //caso mudemos essa ordem de teste, o teste vai dar erro
-    Node *dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node3, dequeued);
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node1, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node3, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node2, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node1, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node4, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node2, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node10, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node4, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node8, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node10, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node6, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node8, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node5, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node6, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node7, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node5, dequeue(queue));
 
-    dequeued = dequeue(queue);
-    TEST_ASSERT_EQUAL_PTR(new_node9, dequeued);
+    TEST_ASSERT_EQUAL_PTR(new_node7, dequeue(queue));
+
+    TEST_ASSERT_EQUAL_PTR(new_node9, dequeue(queue));
 
     //aqui, testamos se o no que a funcao dequeue retornou foi o mesmo
     //que mandamos fazer o dequeue para todos os casos.
@@ -113,8 +106,6 @@ void teste_huff_tree()
 
     //aqui estamos criando a arvore de huffman
     Node *root = create_huffman_tree(queue);
-
-    //printf("%c\n", root->left->right->right->byte);
     
     //Para simplificar, estou testando para saber se o caminho das folhas esta correto
     TEST_ASSERT_EQUAL_CHAR('a', root->left->right->left->left->left->byte);
