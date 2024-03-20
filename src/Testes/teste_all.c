@@ -115,8 +115,6 @@ void teste_huff_tree()
     Node *root = create_huffman_tree(queue);
 
     //printf("%c\n", root->left->right->right->byte);
-
-    char teste = root->left->byte;
     
     //Para simplificar, estou testando para saber se o caminho das folhas esta correto
     TEST_ASSERT_EQUAL_CHAR('a', root->left->right->left->left->left->byte);
