@@ -15,16 +15,45 @@ void teste_fila()
     Huff_Queue *queue = create_queue();
 
     //criamos alguns nos com valores variados sem seguir um padrao
-    Node *new_node1 = create_node('b', 2);
-    Node *new_node2 = create_node('c', 3);
-    Node *new_node3 = create_node('a', 1);
-    Node *new_node4 = create_node('d', 4);
-    Node *new_node5 = create_node('h', 8);
-    Node *new_node6 = create_node('g', 7);
-    Node *new_node7 = create_node('i', 9);
-    Node *new_node8 = create_node('f', 6);
-    Node *new_node9 = create_node('j', 10);
-    Node *new_node10 = create_node('e', 5);
+    int frequencia = 2;
+    char item = 'b';
+    Node *new_node1 = create_node(&item, &frequencia);
+
+    frequencia = 3;
+    item = 'c';
+    Node *new_node2 = create_node(&item, &frequencia);
+    
+    frequencia = 1;
+    item = 'a';
+    Node *new_node3 = create_node(&item, &frequencia);
+    
+    frequencia = 4;
+    item = 'd';
+    Node *new_node4 = create_node(&item, &frequencia);
+    
+    frequencia = 8;
+    item = 'h';
+    Node *new_node5 = create_node(&item, &frequencia);
+    
+    frequencia = 7;
+    item = 'g';
+    Node *new_node6 = create_node(&item, &frequencia);
+    
+    frequencia = 9;
+    item = 'i';
+    Node *new_node7 = create_node(&item, &frequencia);
+    
+    frequencia = 6;
+    item = 'f';
+    Node *new_node8 = create_node(&item, &frequencia);
+    
+    frequencia = 10;
+    item = 'j';
+    Node *new_node9 = create_node(&item, &frequencia);
+    
+    frequencia = 5;
+    item = 'e';
+    Node *new_node10 = create_node(&item, &frequencia);
 
 
     //adicionamos os nos na fila na ordem que criamos os mesmos
@@ -80,16 +109,45 @@ void teste_huff_tree()
     Huff_Queue *queue = create_queue();
 
     //criamos alguns nos com valores variados sem seguir um padrao
-    Node *new_node1 = create_node('b', 2);
-    Node *new_node2 = create_node('c', 3);
-    Node *new_node3 = create_node('a', 1);
-    Node *new_node4 = create_node('d', 4);
-    Node *new_node5 = create_node('h', 8);
-    Node *new_node6 = create_node('g', 7);
-    Node *new_node7 = create_node('i', 9);
-    Node *new_node8 = create_node('f', 6);
-    Node *new_node9 = create_node('j', 10);
-    Node *new_node10 = create_node('e', 5);
+    int frequencia = 2;
+    char item = 'b';
+    Node *new_node1 = create_node(&item, &frequencia);
+
+    frequencia = 3;
+    item = 'c';
+    Node *new_node2 = create_node(&item, &frequencia);
+    
+    frequencia = 1;
+    item = 'a';
+    Node *new_node3 = create_node(&item, &frequencia);
+    
+    frequencia = 4;
+    item = 'd';
+    Node *new_node4 = create_node(&item, &frequencia);
+    
+    frequencia = 8;
+    item = 'h';
+    Node *new_node5 = create_node(&item, &frequencia);
+    
+    frequencia = 7;
+    item = 'g';
+    Node *new_node6 = create_node(&item, &frequencia);
+    
+    frequencia = 9;
+    item = 'i';
+    Node *new_node7 = create_node(&item, &frequencia);
+    
+    frequencia = 6;
+    item = 'f';
+    Node *new_node8 = create_node(&item, &frequencia);
+    
+    frequencia = 10;
+    item = 'j';
+    Node *new_node9 = create_node(&item, &frequencia);
+    
+    frequencia = 5;
+    item = 'e';
+    Node *new_node10 = create_node(&item, &frequencia);
 
 
     //adicionamos os nos na fila na ordem que criamos os mesmos
@@ -108,25 +166,25 @@ void teste_huff_tree()
     Node *root = create_huffman_tree(queue);
     
     //Para simplificar, estou testando para saber se o caminho das folhas esta correto
-    TEST_ASSERT_EQUAL_CHAR('a', root->left->right->left->left->left->byte);
+    TEST_ASSERT_EQUAL_CHAR('a', *(unsigned char *) root->left->right->left->left->left->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('b', root->left->right->left->left->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('b', *(unsigned char *) root->left->right->left->left->right->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('c', root->left->right->left->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('c', *(unsigned char *) root->left->right->left->right->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('d', root->right->right->left->left->byte);
+    TEST_ASSERT_EQUAL_CHAR('d', *(unsigned char *) root->right->right->left->left->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('e', root->right->right->left->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('e', *(unsigned char *) root->right->right->left->right->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('f', root->left->right->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('f', *(unsigned char *) root->left->right->right->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('g', root->right->left->left->byte);
+    TEST_ASSERT_EQUAL_CHAR('g', *(unsigned char *) root->right->left->left->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('h', root->right->left->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('h', *(unsigned char *) root->right->left->right->byte);
     
-    TEST_ASSERT_EQUAL_CHAR('i', root->right->right->right->byte);
+    TEST_ASSERT_EQUAL_CHAR('i', *(unsigned char *) root->right->right->right->byte);
 
-    TEST_ASSERT_EQUAL_CHAR('j', root->left->left->byte);
+    TEST_ASSERT_EQUAL_CHAR('j', *(unsigned char *) root->left->left->byte);
 
     return;
 }
