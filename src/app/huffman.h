@@ -20,7 +20,7 @@ void compress(char * path_file){
     for (int i = 0; i < ASCII_LENGTH; i++)
     {
         if(arr_freq[i] > 0){
-        Node * new_node = create_node(i, arr_freq[i]);
+        Node * new_node = create_node(&i, &arr_freq[i]);
         enqueue_priority(queue, new_node);
         }
     }
@@ -69,7 +69,7 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
 
     //apagar
     printf("trash %d\n", trash);
-    printf("trash size %d\n", tree_size);
+    printf("tree size %d\n", tree_size);
 
     /* Montando dados em preordem */
     unsigned char preorder[tree_size]; /* add \0 ? */
@@ -87,9 +87,9 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
     /* construir arvore */
     Huff_Tree * huff_tree = (Huff_Tree *)malloc(sizeof(Huff_Tree));
     huff_tree->root = NULL;
-
+    
     huff_tree->root = read_pre_order(preorder, &index, huff_tree->root, tree_size);
-
+    
     //apagar
     print_pre_order(huff_tree->root);
 

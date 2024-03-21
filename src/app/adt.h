@@ -8,21 +8,24 @@
 
 #define ASCII_LENGTH 256
 
-typedef struct node {
-	int priority;
-    unsigned char byte;
-	struct node *next;
+typedef struct node
+{
+    void *byte;
+    void *priority;
+    struct node *next;
     struct node *left;
     struct node *right;
 } Node;
 
-typedef struct {
-    Node * head;
+typedef struct
+{
+    Node *head;
     int size;
 } Huff_Queue;
 
-typedef struct {
-    Node * root;
+typedef struct
+{
+    Node *root;
 } Huff_Tree;
 
 /*
@@ -30,7 +33,7 @@ typedef struct {
     - PARAMETRO: É passado dois parâmetros, um informando o byte e outro a frequência daquele byte
     - RETORNO: É retornado um nó com as informações passadas
 */
-Node * create_node(unsigned char byte, int frequency);
+Node * create_node(void *byte, void *frequency);
 
 /*
     - OBJETIVO: Criar uma lista 
@@ -75,10 +78,17 @@ Node * create_huffman_tree(Huff_Queue * queue);
 - Parametro: Um Byte e a Frequencia do byte
 - Retorno: Um No alocado e instanciado  
 */
-Node * create_node(unsigned char byte, int frequency){
+Node * create_node(void *byte, void *frequency){
     Node *new_node = malloc(sizeof(Node));
-	new_node->priority = frequency;
-    new_node->byte = byte;
+
+    int *priority = (int *) malloc (sizeof(int));
+    *priority = *(int *) frequency;
+
+    unsigned char *new_byte = (unsigned char *)malloc(sizeof(unsigned char));
+    *new_byte = *(unsigned char *)byte;
+
+	new_node->priority = priority;
+    new_node->byte = new_byte;
     new_node->left = NULL; 
     new_node->right = NULL; 
     return new_node;
@@ -113,7 +123,7 @@ int is_empty_queue(Huff_Queue * queue){
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
    /*  Node * new_node = create_node(byte, freq); */
 
-    if(is_empty_queue(queue) || (new_node->priority <= queue->head->priority)){
+    if(is_empty_queue(queue) || (*(int *)new_node->priority <= *(int *)queue->head->priority)){
         new_node->next = queue->head;
         queue->head = new_node;
         queue->size++;
@@ -122,7 +132,7 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
 
     Node * current = queue->head;
 
-    while (current->next != NULL && (new_node->priority > current->next->priority)){
+    while (current->next != NULL && (*(int *)new_node->priority > *(int *)current->next->priority)){
         current = current->next;
     }
 
@@ -165,7 +175,11 @@ Node * create_huffman_tree(Huff_Queue * queue){
     {
         left = dequeue(queue);
         right = dequeue(queue);
-        new_node = create_node('*', left->priority + right->priority); // Allocate memory for the new node
+
+        unsigned char asterisco = '*';
+        int sum_priority = *(int *)left->priority + *(int *)right->priority;
+
+        new_node = create_node(&asterisco, &sum_priority); // Allocate memory for the new node
         new_node->left = left;
         new_node->right = right;
         enqueue_priority(queue, new_node);
@@ -215,7 +229,7 @@ void create_dictionary(char **dictionary, Node *root, char *path, int column) {
     char left[column], right[column];
 
     if (root->left == NULL && root->right == NULL) {
-        strcpy(dictionary[root->byte], path);
+        strcpy(dictionary[*(unsigned char *)root->byte], path);
     } else {
         strcpy(left, path);
         strcpy(right, path);
@@ -240,7 +254,7 @@ void print_dictionary(char ** dictionary){
 
 void print_huff_tree(Node * huff_tree, int heigth){
     if(huff_tree->left == NULL && huff_tree->right == NULL){
-        printf("leaf: %c - height: %d\n", huff_tree->byte ,heigth);
+        printf("leaf: %c - height: %d\n", *(unsigned char *)huff_tree->byte ,heigth);
         return;
     }
 
@@ -308,7 +322,7 @@ unsigned char * decoding_text(char text[], Node * root){
 
         if (aux->left == NULL && aux->right == NULL)
         {
-            temp[0] = aux->byte;
+            temp[0] = *(unsigned char *)aux->byte;
             temp[1] = '\0';
 
             strcat(decoding, temp);
@@ -331,7 +345,7 @@ int size_tree(Node * node){
         return 0;
     }
  
-    if(node->left == NULL && node->right == NULL && (node->byte == '*' || node->byte == '\\')) {
+    if(node->left == NULL && node->right == NULL && (*(unsigned char *)node->byte == '*' || *(unsigned char *)node->byte == '\\')) {
         return 2;
     }
 
@@ -433,8 +447,8 @@ void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize) 
             if (qts_bytes_completos == 0 && no_trash > 0) no_trash--;
 
             if (current->left == NULL && current->right == NULL) {
-                printf("qtdbits: %d decompress... %c\n", qts_bytes_completos, current->byte);
-                fwrite(&current->byte, sizeof(unsigned char), 1, decompress_file);
+                printf("qtdbits: %d decompress... %c\n", qts_bytes_completos, *(unsigned char *)current->byte);
+                fwrite(current->byte, sizeof(unsigned char), 1, decompress_file); 
                 current = root;
             }
         }
@@ -461,13 +475,13 @@ int teste(int i)
 void pre_order_tree(Node * root, char * preorder, int *index)
 {
     if (root != NULL) {
-        if(root->left == NULL && root->right == NULL && (root->byte == '\\'|| root->byte == '*' ))
+        if(root->left == NULL && root->right == NULL && (*(unsigned char *)root->byte == '\\'|| *(unsigned char *)root->byte == '*' ))
         {
             preorder[*index] = '\\';
             (*index)++;
         }
 
-        preorder[*index] = root->byte;
+        preorder[*index] = *(unsigned char *)root->byte;
         (*index)++;
         pre_order_tree(root->left, preorder, index);
         pre_order_tree(root->right, preorder, index);
@@ -480,7 +494,8 @@ Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
     {
         if (tree[*index] == '*') {
             // Create a new node with the special character '*'
-            arvore = create_node('*', 0);
+            unsigned char asterisco = '*';
+            arvore = create_node(&asterisco, index);
             *index += 1;
 
             // Recursively read left and right subtrees
@@ -492,7 +507,8 @@ Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
             *index += 1;
             
             // Create a new node with the character following '\'
-            arvore = create_node(tree[*index], 0);
+            unsigned char contra_barra = tree[*index];
+            arvore = create_node(&contra_barra, index);
 
             // Move to the next character
             *index += 1;
@@ -500,7 +516,8 @@ Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
         else
         {
             // Create a new node with the current character
-            arvore = create_node(tree[*index], 0);
+            unsigned char byteAux = tree[*index];
+            arvore = create_node(&byteAux, index);
 
             // Move to the next character
             *index += 1;
@@ -512,7 +529,7 @@ Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
 
 void print_pre_order(Node *arvore) {
     if (arvore != NULL) {
-        printf("%c ", arvore->byte);
+        printf("%c ", *(unsigned char *)arvore->byte);
         print_pre_order(arvore->left);
         print_pre_order(arvore->right);
     }
