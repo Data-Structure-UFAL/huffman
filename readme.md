@@ -1,35 +1,32 @@
-# Huffman Project
+# Algoritimo de Huffman
 
-## Introduction
+## Objetivo
 
-Huffman coding, named after its inventor David Huffman, is a lossless data compression technique that assigns shorter codes to more frequent symbols and longer codes to less frequent symbols. This approach aims to minimize the average length of the encoded data, resulting in a compressed representation of the original information.
+## Arquitetura do Projeto
 
-## Core Principles
+## Fluxo do Huffman
 
-1. Symbol Frequencies: The algorithm first analyzes the frequency of each symbol (character, letter, etc.) in the 
-2. data. This information is crucial for assigning appropriate code lengths.
-Building the Huffman Tree: Symbols are represented as leaf nodes in a binary tree. The algorithm iteratively merges the two symbols with the lowest frequencies into a parent node, assigning a 0 to the left branch and a 1 to the right branch. This process continues until a single root node remains, forming the Huffman tree.
-3. Code Assignment: Each symbol's code is derived by traversing its path from the leaf node to the root, with 0s corresponding to left branches and 1s to right branches. More frequent symbols will have shorter paths, resulting in shorter codes.
-4. Decoding: Decoding involves traversing the Huffman tree based on the received code. Starting at the root, each 0 leads to the left child, and each 1 leads to the right child. When a leaf node is reached, the corresponding symbol is identified and added to the decoded data.
+### Compactar 
 
-## Implementation Steps
+1. Leitura do Arquivo 
+    - Para a leitura dos arquivos, foi usado a leitura do arquivo em modo binário, com isso foi possível mapear todos os bytes que formam o arquivo em específico, seja ele texo, imagem, vídeo ...
+    
+    - O struct OBJECT_DATA armazena os bits e a quantidade de bytes
 
-- Calculate symbol frequencies.
-- Create a priority queue with leaf nodes representing symbols and their frequencies.
-- Extract the two nodes with the lowest frequencies.
-- Create a new parent node with these two nodes as children and a combined frequency.
-- Insert the new parent node back into the priority queue.
-- Repeat steps 3-5 until only one node remains (the root).
-- Traverse the tree to assign codes to each symbol based on their paths.
-- Encode the original data by replacing each symbol with its corresponding code.
-- Decode the encoded data by traversing the Huffman tree based on the received codes.
+    - A função read_initial_file(path_file) é responsável por fazer a leitura do arquivo, armazenar os dados referentes as OBJECT_DATA
 
-## Applications
+2. Mapeamendo da Frequência de Bytes 
 
-Huffman coding is widely used in various applications, including:
+    - 
+3. Criação de uma Priority Queue
+4. Criar Árvore de Huffman
+5. Montar Dicionário
+6. Representação dos Bits Comprimidos
+7. Formação do Header 
+8. Escrever Dados no Arquivo Compactado
 
-- File compression formats: ZIP, PNG, JPEG
-- Network transmission protocols: HTTP, TCP/IP
-- Data storage: Hard drives, SSDs
-- Image and audio compression: JPEG, MP3
-- Text compression: Dictionary encoding
+### Descompactar 
+1. Leitura do Arquivo Compactado
+2. Extrair Informações do Header 
+3. Construir Árvore de Huffman (A partir dela em pre-ordem)
+4. Escrever Dados no Arquivo Descompactado
