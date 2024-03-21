@@ -271,15 +271,16 @@ int size_text_coding(char ** dictionary, object_data * data){
 - Parametro: Dicionario, Texto
 - Retorno: Uma string de um texto codificado
 */
-char * coding_text(char ** dictionary, object_data * data){
-    int size =  size_text_coding(dictionary, data) + 1;
-    char * code = calloc(size, sizeof(char));
+char *coding_text(char **dictionary, object_data *data) {
+    int size = size_text_coding(dictionary, data) + 1;
+    char *code = calloc(size, sizeof(char));
+    char *dest = code;
 
-   for (int i = 0; i < data->size; i++)
-   {
-     strcat(code, dictionary[data->byte[i]]);
-   }
-   
+    for (int i = 0; i < data->size; i++) {
+        dest = strcpy(dest, dictionary[data->byte[i]]);
+        dest += strlen(dictionary[data->byte[i]]);
+    }
+
     return code;
 }
 
