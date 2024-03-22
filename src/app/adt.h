@@ -207,7 +207,7 @@ int tree_height(Node * root){
 
 /* 
 - Objetivo: Fazer alocação de memória do dicionário
-- Parametro: Um inteiro representndo o numero de colunas
+- Parametro: Um inteiro representando o numero de colunas
 - Retorno: Um ponteiro que aponta para um array de strings
 */
 char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASCII and not 256*/
@@ -222,6 +222,7 @@ char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASC
 
 /* 
 - Objetivo: Criar um dicionário que referencia o caminho das folhas de um byte 
+    de forma recursiva.
 - Parametro: Dicionario Alocado, Raiz, Caminho Vazio, Numero de Colunas
 - Retorno: Sem retorno... altera o dicionário por referencia
 */
@@ -231,9 +232,11 @@ void create_dictionary(char **dictionary, Node *root, char *path, int column) {
     if (root->left == NULL && root->right == NULL) {
         strcpy(dictionary[*(unsigned char *)root->byte], path);
     } else {
+        //strcpy copia
         strcpy(left, path);
         strcpy(right, path);
 
+        //strcat concatena
         strcat(left, "0");
         strcat(right, "1");
 
@@ -335,7 +338,7 @@ unsigned char * decoding_text(char text[], Node * root){
     return decoding;
 }
 
-
+//retorna o numero de bits necessariso para preencher o ultimo byte
 int trash_size(char ** dictionary, object_data * data){
     return 8 - (size_text_coding(dictionary, data) % 8);
 }
@@ -460,16 +463,6 @@ void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize) 
 
     fclose(compress_file);
     fclose(decompress_file);
-}
-
-
-//FUNCAO DE TESTE PARA FINS DE TESTE
-
-int teste(int i)
-{
-    if(i == 1) return 0;
-
-    return 1;
 }
 
 void pre_order_tree(Node * root, char * preorder, int *index)

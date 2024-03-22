@@ -29,7 +29,9 @@ void compress(char * path_file){
     Node * huff_tree = create_huffman_tree(queue);
 
     /* Montar Dicionário */
+    // +1 pois com isso, também estamos contando com o \o
     int column = tree_height(huff_tree) + 1;
+
     char ** dictionary = create_empty_dictionary(column);
     create_dictionary(dictionary, huff_tree, "", column);
 
@@ -37,8 +39,12 @@ void compress(char * path_file){
     char * text_coded = coding_text(dictionary, binary_data);
 
     /* Formatação do Header */
+    //retorna o numero de bits necessariso para preencher o ultimo byte
     int trashSize = trash_size(dictionary, binary_data);
+
+    //conta o numero de nodes da arvore
     int treeSize = size_tree(huff_tree);
+    
     unsigned short initial_header =  int_to_binary(trashSize, treeSize);
     printf("header: %d\n", initial_header);
 
