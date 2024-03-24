@@ -11,7 +11,6 @@ typedef struct {
 } object_data;
 
 
-
 int initial_message(){
     puts("\tAlgorítimo de Huffman\n");
     puts("1 - Comprimir\n");
@@ -19,12 +18,8 @@ int initial_message(){
 
     int choice;
     scanf("%d", &choice);
-
-   
     return choice;
 }
-
-
 
 /*  
     # OBJETIVO: ler qualquer tipo de arquivo e conseguir ter os bits para uma posterior manipulação
@@ -32,7 +27,6 @@ int initial_message(){
     # RETORNO: É retornado um struct do tipo object_data que contem um 'byte' armazenando os bits e um 'size' armazenando o tamanho do arquivo (numero de bytes)
 
 */
-
 object_data *read_initial_file(char name_file[]);
 
 
@@ -42,17 +36,7 @@ object_data *read_initial_file(char name_file[]);
         e um array de inteiros que irá armazenar a frequência dos bytes.
     # RETORNO: Não é retornado nada, mas o array de frequencia que é passado é alterado no escopo em que a fnção foi chamada
 */
-
 void get_frequency(object_data * data, int arr_frequency[]);
-
-
-
-
-
-
-
-
-
 
 
 

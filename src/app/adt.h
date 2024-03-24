@@ -71,13 +71,97 @@ Node * dequeue(Huff_Queue * queue);
 */
 Node * create_huffman_tree(Huff_Queue * queue);
 
-
+/* 
+- Objetivo: Calcular a altura da arvore
+- Parametro: Um no apontando para a raiz da arvore
+- Retorno: Um inteiro representando a altura
+*/
+int tree_height(Node * root);
 
 /* 
-- Objetivo: Alocar e instanciar uhm No
-- Parametro: Um Byte e a Frequencia do byte
-- Retorno: Um No alocado e instanciado  
+- Objetivo: Fazer alocação de memória do dicionário
+- Parametro: Um inteiro representando o numero de colunas
+- Retorno: Um ponteiro que aponta para um array de strings
 */
+char ** create_empty_dictionary(int column);
+
+/* 
+- Objetivo: Criar um dicionário que referencia o caminho das folhas de um byte 
+    de forma recursiva.
+- Parametro: Dicionario Alocado, Raiz, Caminho Vazio, Numero de Colunas
+- Retorno: Sem retorno... altera o dicionário por referencia
+*/
+void create_dictionary(char **dictionary, Node *root, char *path, int column);
+
+/* 
+- Objetivo: Calcular o numero de bits com referencia ao dicionario
+- Parametro: Dicionario, Texto
+- Retorno: Um inteiro representando o numero de bits
+*/
+int size_text_coding(char ** dictionary, object_data * data);
+
+/* 
+- Objetivo: Codificar um texto em bits (formato de texto) com base no dicionario
+- Parametro: Dicionario, Texto
+- Retorno: Uma string de um texto codificado
+*/
+char *coding_text(char **dictionary, object_data *data);
+
+/*
+	-Objetivo: Calcular o tamanho do lixo, ou seja, os bits restantes para completar um byte
+	-Parâmetro: Dicionário, Texo Codificado
+	-Um inteiro representando o tamanho do lixo
+*/
+int trash_size(char ** dictionary, object_data * data);
+
+/*
+	-Objetivo: Calcular o numero de nodos que serão gravados no header em preordem, ou seja, os nods da arvore + caracter de escape caso necessário
+	-Parâmetro: Um nó representado a raiz da arvore
+	-Retorno: Um inteiro representando o numero de 
+*/
+int size_tree(Node * node);
+
+
+
+/*
+	-Objetivo: Gravar os bits do header em uma variável de 16 bits
+	-Parâmetro: Dois inteiros representando o lixo e o numero de nodos
+	-Retorno: Um unsigned short (16 bits) representando o inicio do header
+*/
+unsigned short int_to_binary(int trash, int size_tree);
+
+
+/*
+	-Objetivo: Criar um arquivo com os bytes codificados
+	-Parâmetro: Texto codificado
+	-Retorno: Sem retorno, apenas um arquivo é criado representando o arquivo comprimido
+*/
+void create_file_compressed(char * text_coded);
+
+/*
+	-Objetivo: Criar um arquivo com os dados descomprimidos
+	-Parâmetro: Um nodo para a raiz, Quantia de bytes completos, o numero de nodes, o tamanho do lixo
+	-Retorno: Sem retorno, apenas cria um arquivo descomprimido
+*/
+void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize);
+
+
+/*
+	-Objetivo: Gravar a arvore em pre ordem em uma variável local
+	-Parâmetro: Raiz, Uma string por referência, index por referencia
+	-Retorno: Sem retorno, a funcao modifica uma variável por referência
+*/
+void pre_order_tree(Node * root, char * preorder, int *index);
+
+/*
+	-Objetivo: Criar uma arvore a partir de dados em pre-ordem
+	-Parâmetre: Arvore em preordem, ponteiro para o index, Nodo para a raiz, o numero de nodos
+	-Retorno: Uma nodo apontando para a raiz da arvore
+*/
+Node *construt_tree_preorder_data(unsigned char *tree, int *index, Node *arvore, int size);
+
+
+
 Node * create_node(void *byte, void *frequency){
     Node *new_node = malloc(sizeof(Node));
 
@@ -94,11 +178,7 @@ Node * create_node(void *byte, void *frequency){
     return new_node;
 }
 
-/* 
-- Objetivo: Instancia uma lista 
-- Parametro: Sem parametros
-- Retorno: Um struct contendo um ponteiro para o inicio da lista e o tamanho atual 
-*/
+
 Huff_Queue * create_queue(){
     Huff_Queue * new_queue = malloc(sizeof(Huff_Queue));
     new_queue->head = NULL;
@@ -106,20 +186,12 @@ Huff_Queue * create_queue(){
     return new_queue;
 }
 
-/* 
-- Objetivo: Verificar se a lista esta vazia
-- Parametro: Uma Lista
-- Retorno: Um inteiro representando true ou false
-*/
+
 int is_empty_queue(Huff_Queue * queue){
     return queue->head == NULL;
 }
 
-/* 
-- Objetivo: Adicionar um no na lista de forma crescente
-- Parametro: Lista,e o No a ser adicionado
-- Retorno: Sem retorno, a lista eh alterada por referencia
-*/
+
 void enqueue_priority(Huff_Queue * queue, Node * new_node){
    /*  Node * new_node = create_node(byte, freq); */
 
@@ -141,12 +213,6 @@ void enqueue_priority(Huff_Queue * queue, Node * new_node){
     queue->size++;
 }
 
-/* CREATE TREE HUFFMAN */
-/* 
-- Objetivo: Remover o primeiro no da lista
-- Parametro: Uma lista
-- Retorno: O no removido 
-*/
 Node * dequeue(Huff_Queue * queue){
     if(is_empty_queue(queue)){
         printf("Queue Underflow\n");
@@ -163,11 +229,6 @@ Node * dequeue(Huff_Queue * queue){
     return dequeued;
 }
 
-/* 
-- Objetivo: Construir a arvore de huffman
-- Parametro: Um no apontando para o inicio de uma lista de prioridades
-- Retorno: Um no apontando para a raiz da arvore
-*/
 Node * create_huffman_tree(Huff_Queue * queue){
     Node *left, *right, *new_node;
 
@@ -189,11 +250,7 @@ Node * create_huffman_tree(Huff_Queue * queue){
     return dequeue(queue);
 }
 
-/* 
-- Objetivo: Calcular a altura da arvore
-- Parametro: Um no apontando para a raiz da arvore
-- Retorno: Um inteiro representando a altura
-*/
+
 int tree_height(Node * root){
     int left, right;
 
@@ -205,11 +262,6 @@ int tree_height(Node * root){
     return (left > right) ? left + 1: right + 1; 
 }
 
-/* 
-- Objetivo: Fazer alocação de memória do dicionário
-- Parametro: Um inteiro representando o numero de colunas
-- Retorno: Um ponteiro que aponta para um array de strings
-*/
 char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASCII and not 256*/
     char **dictionary;
     dictionary = malloc(sizeof(char*) * 256); 
@@ -220,12 +272,6 @@ char ** create_empty_dictionary(int column){ /* Remember to use CONST LENGTH_ASC
     return dictionary;
 }
 
-/* 
-- Objetivo: Criar um dicionário que referencia o caminho das folhas de um byte 
-    de forma recursiva.
-- Parametro: Dicionario Alocado, Raiz, Caminho Vazio, Numero de Colunas
-- Retorno: Sem retorno... altera o dicionário por referencia
-*/
 void create_dictionary(char **dictionary, Node *root, char *path, int column) {
     char left[column], right[column];
 
@@ -245,34 +291,6 @@ void create_dictionary(char **dictionary, Node *root, char *path, int column) {
     }
 }
 
-
-void print_dictionary(char ** dictionary){
-    for (int i = 0; i < 256; i++)
-    {
-        if(strlen(dictionary[i]) > 0)
-            printf("\t%3c: %s\n", i, dictionary[i]);
-    }
-    
-}
-
-void print_huff_tree(Node * huff_tree, int heigth){
-    if(huff_tree->left == NULL && huff_tree->right == NULL){
-        printf("leaf: %c - height: %d\n", *(unsigned char *)huff_tree->byte ,heigth);
-        return;
-    }
-
-    print_huff_tree(huff_tree->left, heigth + 1);
-    print_huff_tree(huff_tree->right, heigth + 1);
-}
-
-
-/* CODIFICAÇÃO DO TEXTO */
-
-/* 
-- Objetivo: Calcular o numero de bits com referencia ao dicionario
-- Parametro: Dicionario, Texto
-- Retorno: Um inteiro representando o numero de bits
-*/
 int size_text_coding(char ** dictionary, object_data * data){
     int length = 0, i = 0;
 
@@ -283,11 +301,7 @@ int size_text_coding(char ** dictionary, object_data * data){
     
     return length;
 }
-/* 
-- Objetivo: Codificar um texto em bits (formato de texto) com base no dicionario
-- Parametro: Dicionario, Texto
-- Retorno: Uma string de um texto codificado
-*/
+
 char *coding_text(char **dictionary, object_data *data) {
     int size = size_text_coding(dictionary, data) + 1;
     char *code = calloc(size, sizeof(char));
@@ -301,44 +315,8 @@ char *coding_text(char **dictionary, object_data *data) {
     return code;
 }
 
-/* DECODING JUST TEXT TO LERANING */
-
-/* 
-- Objetivo: Decodificar uma sequencia de bits (char) no texto original
-- Parametro: Texto codificado, Raiz da Arvore de  Huffman
-- Retorno: Uma string decodificada 
-*/
-unsigned char * decoding_text(char text[], Node * root){
-    int i = 0;
-    Node * aux = root;
-    char temp[2];
-    unsigned char * decoding = calloc(strlen(text) , sizeof(unsigned char));
 
 
-    while (text[i] != '\0')
-    {
-       
-        if(text[i] == '0')
-            aux = aux->left;
-        else     
-            aux = aux->right;
-
-        if (aux->left == NULL && aux->right == NULL)
-        {
-            temp[0] = *(unsigned char *)aux->byte;
-            temp[1] = '\0';
-
-            strcat(decoding, temp);
-            aux = root;
-        }
-
-        i++;
-    }
-
-    return decoding;
-}
-
-//retorna o numero de bits necessariso para preencher o ultimo byte
 int trash_size(char ** dictionary, object_data * data){
     return 8 - (size_text_coding(dictionary, data) % 8);
 }
@@ -450,7 +428,6 @@ void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize) 
             if (qts_bytes_completos == 0 && no_trash > 0) no_trash--;
 
             if (current->left == NULL && current->right == NULL) {
-                printf("qtdbits: %d decompress... %c\n", qts_bytes_completos, *(unsigned char *)current->byte);
                 fwrite(current->byte, sizeof(unsigned char), 1, decompress_file); 
                 current = root;
             }
@@ -509,14 +486,6 @@ Node *construt_tree_preorder_data(unsigned char *tree, int *index, Node *arvore,
         }
     }
     return arvore;
-}
-
-void print_pre_order(Node *arvore) {
-    if (arvore != NULL) {
-        printf("%c ", *(unsigned char *)arvore->byte);
-        print_pre_order(arvore->left);
-        print_pre_order(arvore->right);
-    }
 }
 
 #endif 
