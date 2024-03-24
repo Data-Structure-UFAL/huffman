@@ -1,8 +1,42 @@
-# Algoritimo de Huffman
+# Algoritmo de Huffman
 
 ## Objetivo
 
+Este projeto tem como objetivo aplicar os conhecimentos adquiridos na disciplina de Estrutura de Dados do curso de Ciência da Computação, ministrada pelo docente Márcio Ribeiro, através da criação de um Algoritmo de Huffman que comprime qualquer tipo de extensão de arquivo, manipulando diretamente os bytes destes.
+
+Alguns conhecimentos aplicados neste projeto incluem:
+
+1. Estruturas de Dados:
+    - Lista Encadeada
+    - Árvore Binária
+    - Tabela Hash
+
+2. Operações Bitwise
+
+3. Operações com Ponteiros
+
+4. Leitura, modificação e criação de arquivos com a linguagem C.
+
+5. Algoritmo de Huffman
+
 ## Arquitetura do Projeto
+
+O código desse projeto está organizado da seguinte forma:
+
+- `src/` : Contém os diretórios da aplicação, testes unitários e o Readme do projeto.
+
+- `src/app` : Este diretório contém os cabeçalhos (.h) do projeto e o arquivo fonte do projeto.
+    - `adt.h` : Contém os Tipos Abstratos de Dados das estruturas de dados utilizadas no projeto.
+    - `utils.h` : Contém funções úteis para o projeto, como leitura de arquivos e ações relacionadas ao cabeçalho do arquivo comprimido.
+    - `huffman.h` : Contém as funções de compressão e descompressão dos arquivos.
+    - `huffman.c` : O arquivo principal que contém a função `main()` do Algoritmo de Huffman e inicia a execução do programa.
+
+- `src/Testes` : Esse diretório contém as bibliotecas e códigos relacionados aos testes unitários dos Tipos Abstratos de Dados.
+    - `Makefile` : Arquivo de configuração do Makefile para compilação dos testes unitários.
+    - `teste_all.c` : O arquivo principal que contém a função `main()` dos testes unitários e inicia a execução do programa.
+
+- `src/Teste/Unity` : Este diretório contém a biblioteca externa de testes unitários.
+
 
 ## Fluxo do Huffman
 
