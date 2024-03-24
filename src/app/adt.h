@@ -143,7 +143,7 @@ void create_file_compressed(char * text_coded);
 	-Parâmetro: Um nodo para a raiz, Quantia de bytes completos, o numero de nodes, o tamanho do lixo
 	-Retorno: Sem retorno, apenas cria um arquivo descomprimido
 */
-void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize);
+void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize, char * decompress_path);
 
 
 /*
@@ -398,7 +398,7 @@ unsigned int is_on_bit(unsigned char byte, int i){
 }
 
 
-void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize) {
+void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize,  char decompress_path[]) {
     FILE *compress_file = fopen("compress.huff", "rb");
 
     if (!compress_file) {
@@ -406,7 +406,7 @@ void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize) 
         return;
     }
 
-    FILE *decompress_file = fopen("decompress.jpeg", "wb");
+    FILE *decompress_file = fopen(decompress_path, "wb");
     if (!decompress_file) {
         printf("Problema ao abrir arquivo em decompress_file\n");
         fclose(compress_file); // Fechar o arquivo se não puder abrir o outro

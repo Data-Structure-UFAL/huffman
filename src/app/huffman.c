@@ -22,7 +22,7 @@ int main()
     case 2:
         puts("Digita como deve ser salvo o arquivo. Exemplo: 'imagem.png'\n");
         char path_decompress[255];
-        scanf("%s", path);
+        scanf("%s", path_decompress);
         decompress("compress.huff", path_decompress);
         break;
     

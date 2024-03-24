@@ -53,7 +53,7 @@ void compress(char * path_file){
 }
 
 
-void decompress(char * file_compressed_path, char * file_decompressed_path){
+void decompress(char * file_compressed_path, char file_decompressed_path[]){
     /* ler header (Extrair Numero do Lixo e o Size da arvore) */
     FILE * file = fopen("compress.huff", "rb");
 
@@ -88,7 +88,7 @@ void decompress(char * file_compressed_path, char * file_decompressed_path){
     int qts_bytes_completos = data->size - 2 - tree_size;
     if(trash) qts_bytes_completos--;
 
-    decoding(huff_tree->root, qts_bytes_completos, tree_size, trash);
+    decoding(huff_tree->root, qts_bytes_completos, tree_size, trash, file_decompressed_path);
 }
 
 
