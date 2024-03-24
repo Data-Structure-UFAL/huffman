@@ -29,7 +29,6 @@ void compress(char * path_file){
     Node * huff_tree = create_huffman_tree(queue);
 
     /* Montar Dicionário */
-    // +1 pois com isso, também estamos contando com o \o
     int column = tree_height(huff_tree) + 1;
 
     char ** dictionary = create_empty_dictionary(column);
@@ -38,15 +37,11 @@ void compress(char * path_file){
     /* Representação do bytes reduzidos */
     char * text_coded = coding_text(dictionary, binary_data);
 
-    /* Formatação do Header */
-    //retorna o numero de bits necessariso para preencher o ultimo byte
+    /* Formata os primeiros 16 bits do header*/
     int trashSize = trash_size(dictionary, binary_data);
-
-    //conta o numero de nodes da arvore
     int treeSize = size_tree(huff_tree);
     
     unsigned short initial_header =  int_to_binary(trashSize, treeSize);
-    printf("header: %d\n", initial_header);
 
     char preorder[treeSize];
     int index = 0;
@@ -59,56 +54,41 @@ void compress(char * path_file){
 
 
 void decompress(char * file_compressed_path, char * file_decompressed_path){
-    object_data * data = read_initial_file(file_compressed_path);
-
     /* ler header (Extrair Numero do Lixo e o Size da arvore) */
+    FILE * file = fopen("compress.huff", "rb");
 
-    FILE * file = fopen("compress.huff", "rb"); /* Verificar o porque de quando ler byte a byte ler invertido os 16 bits */
-
-    unsigned short first_16_bits = 0;
-    fread(&first_16_bits, sizeof(unsigned short), 1, file);
+        unsigned short first_16_bits = 0;
+        fread(&first_16_bits, sizeof(unsigned short), 1, file);
 
     fclose(file);
 
     unsigned short  trash = get_trash(first_16_bits);
     unsigned short  tree_size = get_size_tree(first_16_bits);
 
-    //apagar
-    printf("trash %d\n", trash);
-    printf("tree size %d\n", tree_size);
-
     /* Montando dados em preordem */
-    unsigned char preorder[tree_size]; /* add \0 ? */
+    object_data * data = read_initial_file(file_compressed_path);
+
+    unsigned char preorder[tree_size];
     preorder[tree_size] = '\0';
+
     for (int i = 0; i < tree_size; i++)
     {
         int current_index_file = i + 2;
         preorder[i] = data->byte[current_index_file];
-        
     }
-    printf("preorder: %s\n", preorder);
-
-    int index = 0;
 
     /* construir arvore */
+    int index = 0;
     Huff_Tree * huff_tree = (Huff_Tree *)malloc(sizeof(Huff_Tree));
     huff_tree->root = NULL;
     
-    huff_tree->root = read_pre_order(preorder, &index, huff_tree->root, tree_size);
-    
-    //apagar
-    print_pre_order(huff_tree->root);
-
-    /* Revisar logica de tratar o lixo */
+    huff_tree->root = construt_tree_preorder_data(preorder, &index, huff_tree->root, tree_size);
 
 
     int qts_bytes_completos = data->size - 2 - tree_size;
     if(trash) qts_bytes_completos--;
 
-    printf("qtd bytes completo: %d\n", qts_bytes_completos);
-
     decoding(huff_tree->root, qts_bytes_completos, tree_size, trash);
-
 }
 
 

@@ -481,41 +481,32 @@ void pre_order_tree(Node * root, char * preorder, int *index)
     }
 }
 
-Node *read_pre_order(unsigned char *tree, int *index, Node *arvore, int size) {
+Node *construt_tree_preorder_data(unsigned char *tree, int *index, Node *arvore, int size) {
 
     if (*index < size)
     {
-        if (tree[*index] == '*') {
-            // Create a new node with the special character '*'
+        if (tree[*index] == '*') { /* Caso seja um nó interno */
             unsigned char asterisco = '*';
             arvore = create_node(&asterisco, index);
             *index += 1;
 
-            // Recursively read left and right subtrees
-            arvore->left = read_pre_order(tree, index, arvore->left, size);
-            arvore->right = read_pre_order(tree, index, arvore->right, size);
+            arvore->left = construt_tree_preorder_data(tree, index, arvore->left, size);
+            arvore->right = construt_tree_preorder_data(tree, index, arvore->right, size);
         }
-        else if (tree[*index] == '\\') {
-            // Move to the next character
-            *index += 1;
-            
-            // Create a new node with the character following '\'
-            unsigned char contra_barra = tree[*index];
-            arvore = create_node(&contra_barra, index);
+        else if (tree[*index] == '\\') { /* Caso seja encontrado um caracter de escape */
+            *index += 1; /* considera o próximo caracter */
 
-            // Move to the next character
+            unsigned char byte = tree[*index];
+            arvore = create_node(&byte, index);
+
             *index += 1;
         }
-        else
+        else /* Caso seja uma folha */
         {
-            // Create a new node with the current character
             unsigned char byteAux = tree[*index];
             arvore = create_node(&byteAux, index);
-
-            // Move to the next character
             *index += 1;
         }
-
     }
     return arvore;
 }
