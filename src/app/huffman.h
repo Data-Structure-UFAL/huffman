@@ -69,7 +69,7 @@ void decompress(char * file_compressed_path, char file_decompressed_path[]){
     object_data * data = read_initial_file(file_compressed_path);
 
     unsigned char preorder[tree_size];
-    preorder[tree_size] = '\0';
+    //preorder[tree_size] = '\0';
 
     for (int i = 0; i < tree_size; i++)
     {

@@ -435,7 +435,7 @@ void decoding(Node *root, int qts_bytes_completos, int treeSize, int trashSize, 
 
         qts_bytes_completos--; 
 
-        if (qts_bytes_completos == 0 && no_trash == 0) break;
+        //if (qts_bytes_completos == 0 && no_trash == 0) break;
     }
 
     fclose(compress_file);
